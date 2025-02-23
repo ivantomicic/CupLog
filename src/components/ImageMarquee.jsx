@@ -23,7 +23,7 @@ const ImageMarquee = ({ images, columns = 3, className = "" }) => {
 
 				return {
 					direction: index % 2 === 0 ? "up" : "down", // Alternate directions
-					speed: 0.01 + Math.random() * 0.02, // Random speed between 0.01 and 0.03
+					speed: 0.005 + Math.random() * 0.01, // Reduced speed: random between 0.005 and 0.015
 					images: columnImages,
 				};
 			});

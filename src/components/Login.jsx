@@ -76,9 +76,9 @@ export default function Login() {
 							className="logo"
 						/>
 					</div>
-					<h2 className="login-title">Login</h2>
+					<h2 className="login-title">Welcome to CupLog</h2>
 					{error && <div className="error-message">{error}</div>}
-					<form onSubmit={handleSubmit}>
+					<form style={{ display: "none" }} onSubmit={handleSubmit}>
 						<div className="form-group">
 							<label className="form-label">
 								Email:
@@ -122,14 +122,16 @@ export default function Login() {
 						</button>
 					</form>
 
-					<div className="divider">or</div>
+					<div className="login-subtitle">
+						Log your brews, improve your extractions...
+					</div>
 
 					<button
 						onClick={handleGoogleLogin}
 						className="google-button"
 						disabled={isLoading}
 					>
-						<svg className="w-5 h-5" viewBox="0 0 24 24">
+						<svg viewBox="0 0 24 24">
 							<path
 								fill="#4285F4"
 								d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -148,6 +150,17 @@ export default function Login() {
 							/>
 						</svg>
 						Continue with Google
+					</button>
+
+					<button
+						onClick={handleGoogleLogin}
+						className="google-button"
+						disabled={isLoading}
+					>
+						<svg viewBox="0 0 512 512">
+							<path d="M248.644,123.476c-5.45-29.71,8.598-60.285,25.516-80.89c18.645-22.735,50.642-40.17,77.986-42.086c4.619,31.149-8.093,61.498-24.826,82.965C309.37,106.527,278.508,124.411,248.644,123.476z M409.034,231.131c8.461-23.606,25.223-44.845,51.227-59.175c-26.278-32.792-63.173-51.83-97.99-51.83c-46.065,0-65.542,21.947-97.538,21.947c-32.96,0-57.965-21.947-97.866-21.947c-39.127,0-80.776,23.848-107.19,64.577c-9.712,15.055-16.291,33.758-19.879,54.59c-9.956,58.439,4.916,134.557,49.279,202.144c21.57,32.796,50.321,69.737,87.881,70.059c33.459,0.327,42.951-21.392,88.246-21.616c45.362-0.258,53.959,21.841,87.372,21.522c37.571-0.317,67.906-41.199,89.476-73.991c15.359-23.532,21.167-35.418,33.11-62.023C414.435,352.487,389.459,285.571,409.034,231.131z"></path>
+						</svg>
+						Continue with Apple
 					</button>
 
 					<div className="signup-container">
