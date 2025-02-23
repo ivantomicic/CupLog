@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
 	getCoffees,
 	createCoffee,
@@ -21,7 +22,7 @@ const getClosestRoastDate = (roastDates) => {
 };
 
 export default function Coffee() {
-	const [coffees, setCoffees] = useState([]);
+	const queryClient = useQueryClient();
 	const [newCoffee, setNewCoffee] = useState({
 		name: "",
 		country: "",
@@ -29,26 +30,47 @@ export default function Coffee() {
 		farm: "",
 		altitude: "",
 		roast: "filter",
-		roastDates: [],
 	});
 	const [newRoastDate, setNewRoastDate] = useState("");
-	const [error, setError] = useState(null);
-	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		loadCoffees();
-	}, []);
+	// Query for fetching coffees with caching
+	const {
+		data: coffees = [],
+		error,
+		isInitialLoading,
+	} = useQuery({
+		queryKey: ["coffees"],
+		queryFn: getCoffees,
+		staleTime: 30000, // Consider data fresh for 30 seconds
+		cacheTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
+	});
 
-	const loadCoffees = async () => {
-		try {
-			const data = await getCoffees();
-			setCoffees(data);
-		} catch (err) {
-			setError(err.message);
-		} finally {
-			setLoading(false);
-		}
-	};
+	// Mutation for creating coffee
+	const createMutation = useMutation({
+		mutationFn: async (coffeeData) => {
+			const coffee = await createCoffee(coffeeData);
+			if (newRoastDate) {
+				await createRoastDate({
+					coffee_id: coffee.id,
+					date: newRoastDate,
+				});
+			}
+			return coffee;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries(["coffees"]);
+		},
+	});
+
+	// Mutation for deleting coffee
+	const deleteMutation = useMutation({
+		mutationFn: deleteCoffee,
+		onSuccess: (_, coffeeId) => {
+			queryClient.setQueryData(["coffees"], (old) =>
+				old?.filter((coffee) => coffee.id !== coffeeId)
+			);
+		},
+	});
 
 	const handleDelete = async (e, coffeeId) => {
 		e.preventDefault();
@@ -59,21 +81,18 @@ export default function Coffee() {
 		);
 		if (confirmDelete) {
 			try {
-				await deleteCoffee(coffeeId);
-				setCoffees(coffees.filter((coffee) => coffee.id !== coffeeId));
+				await deleteMutation.mutateAsync(coffeeId);
 			} catch (err) {
-				setError(err.message);
+				console.error("Failed to delete coffee:", err);
 			}
 		}
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setError(null);
 
 		try {
-			// First create the coffee without roast dates
-			const coffee = await createCoffee({
+			await createMutation.mutateAsync({
 				name: newCoffee.name,
 				country: newCoffee.country,
 				region: newCoffee.region,
@@ -81,18 +100,6 @@ export default function Coffee() {
 				altitude: newCoffee.altitude,
 				roast: newCoffee.roast,
 			});
-
-			// If there's a roast date, create it in the roast_dates table
-			if (newRoastDate) {
-				// You'll need to create a new function in supabase-queries.js for this
-				await createRoastDate({
-					coffee_id: coffee.id,
-					date: newRoastDate,
-				});
-			}
-
-			// Reload coffees to get the updated data with relationships
-			await loadCoffees();
 
 			// Reset form
 			setNewCoffee({
@@ -105,12 +112,12 @@ export default function Coffee() {
 			});
 			setNewRoastDate("");
 		} catch (err) {
-			setError(err.message);
+			console.error("Failed to create coffee:", err);
 		}
 	};
 
-	if (loading) return <div>Loading...</div>;
-	if (error) return <div>Error: {error}</div>;
+	if (isInitialLoading) return <div>Loading...</div>;
+	if (error) return <div>Error: {error.message}</div>;
 
 	return (
 		<div>
@@ -129,6 +136,7 @@ export default function Coffee() {
 								})
 							}
 							required
+							disabled={createMutation.isPending}
 						/>
 					</label>
 				</div>
@@ -145,6 +153,7 @@ export default function Coffee() {
 								})
 							}
 							required
+							disabled={createMutation.isPending}
 						/>
 					</label>
 				</div>
@@ -161,6 +170,7 @@ export default function Coffee() {
 								})
 							}
 							required
+							disabled={createMutation.isPending}
 						/>
 					</label>
 				</div>
@@ -177,6 +187,7 @@ export default function Coffee() {
 								})
 							}
 							required
+							disabled={createMutation.isPending}
 						/>
 					</label>
 				</div>
@@ -193,6 +204,7 @@ export default function Coffee() {
 								})
 							}
 							required
+							disabled={createMutation.isPending}
 						/>
 					</label>
 				</div>
@@ -207,6 +219,7 @@ export default function Coffee() {
 									roast: e.target.value,
 								})
 							}
+							disabled={createMutation.isPending}
 						>
 							<option>filter</option>
 							<option>espresso</option>
@@ -221,10 +234,13 @@ export default function Coffee() {
 							type="date"
 							value={newRoastDate}
 							onChange={(e) => setNewRoastDate(e.target.value)}
+							disabled={createMutation.isPending}
 						/>
 					</label>
 				</div>
-				<button type="submit">Add Coffee</button>
+				<button type="submit" disabled={createMutation.isPending}>
+					{createMutation.isPending ? "Adding..." : "Add Coffee"}
+				</button>
 			</form>
 
 			<div>
@@ -266,17 +282,25 @@ export default function Coffee() {
 								</Link>
 								<button
 									onClick={(e) => handleDelete(e, coffee.id)}
+									disabled={deleteMutation.isPending}
 									style={{
 										backgroundColor: "#dc3545",
 										color: "white",
 										border: "none",
 										padding: "5px 10px",
 										borderRadius: "4px",
-										cursor: "pointer",
+										cursor: deleteMutation.isPending
+											? "not-allowed"
+											: "pointer",
 										minWidth: "70px",
+										opacity: deleteMutation.isPending
+											? 0.7
+											: 1,
 									}}
 								>
-									Delete
+									{deleteMutation.isPending
+										? "Deleting..."
+										: "Delete"}
 								</button>
 							</li>
 						);

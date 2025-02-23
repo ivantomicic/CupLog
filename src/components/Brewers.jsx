@@ -1,137 +1,196 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
-import { getBrewers, createBrewer, deleteBrewer } from '../utils/supabase-queries';
-import { getCurrentUser } from '../utils/supabase';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+	getBrewers,
+	createBrewer,
+	deleteBrewer,
+} from "../utils/supabase-queries";
+import { getCurrentUser } from "../utils/supabase";
 
 export default function Brewers() {
-  const [brewers, setBrewers] = useState([]);
-  const [newBrewer, setNewBrewer] = useState({
-    name: '',
-    material: '',
-    type: 'Pour Over'
-  });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+	const queryClient = useQueryClient();
+	const [newBrewer, setNewBrewer] = useState({
+		name: "",
+		material: "",
+		type: "Pour Over",
+	});
 
-  useEffect(() => {
-    loadBrewers();
-  }, []);
+	// Query for fetching brewers with caching
+	const {
+		data: brewers = [],
+		error,
+		isInitialLoading,
+	} = useQuery({
+		queryKey: ["brewers"],
+		queryFn: getBrewers,
+		staleTime: 30000, // Consider data fresh for 30 seconds
+		cacheTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
+	});
 
-  const loadBrewers = async () => {
-    try {
-      const data = await getBrewers();
-      setBrewers(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+	// Mutation for creating brewers
+	const createMutation = useMutation({
+		mutationFn: async (brewerData) => {
+			const user = await getCurrentUser();
+			return createBrewer({
+				...brewerData,
+				user_id: user.id,
+			});
+		},
+		onSuccess: (newBrewer) => {
+			queryClient.setQueryData(["brewers"], (old) => [
+				newBrewer,
+				...(old || []),
+			]);
+		},
+	});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    
-    try {
-      const user = await getCurrentUser();
-      const brewer = await createBrewer({
-        ...newBrewer,
-        user_id: user.id
-      });
-      setBrewers([brewer, ...brewers]);
-      setNewBrewer({ name: '', material: '', type: 'Pour Over' });
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+	// Mutation for deleting brewers
+	const deleteMutation = useMutation({
+		mutationFn: deleteBrewer,
+		onSuccess: (_, brewerId) => {
+			queryClient.setQueryData(["brewers"], (old) =>
+				old?.filter((brewer) => brewer.id !== brewerId)
+			);
+		},
+	});
 
-  const handleDelete = async (e, brewerId) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const confirmDelete = window.confirm('Are you sure you want to delete this brewer? This will affect any brew logs using this brewer.');
-    if (confirmDelete) {
-      try {
-        await deleteBrewer(brewerId);
-        setBrewers(brewers.filter(brewer => brewer.id !== brewerId));
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-  };
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+		try {
+			await createMutation.mutateAsync(newBrewer);
+			setNewBrewer({ name: "", material: "", type: "Pour Over" });
+		} catch (err) {
+			console.error("Failed to create brewer:", err);
+		}
+	};
 
-  return (
-    <div>
-      <h2>Brewers</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={newBrewer.name}
-              onChange={(e) => setNewBrewer({ ...newBrewer, name: e.target.value })}
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Material:
-            <input
-              type="text"
-              value={newBrewer.material}
-              onChange={(e) => setNewBrewer({ ...newBrewer, material: e.target.value })}
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Type:
-            <select
-              value={newBrewer.type}
-              onChange={(e) => setNewBrewer({ ...newBrewer, type: e.target.value })}
-            >
-              <option>Pour Over</option>
-              <option>Espresso</option>
-              <option>Immersion</option>
-            </select>
-          </label>
-        </div>
-        <button type="submit">Add Brewer</button>
-      </form>
+	const handleDelete = async (e, brewerId) => {
+		e.preventDefault();
+		e.stopPropagation();
 
-      <div>
-        <h3>Saved Brewers</h3>
-        <ul>
-          {brewers.map(brewer => (
-            <li key={brewer.id} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Link to={`/brewers/${brewer.id}`} style={{ flex: 1 }}>
-                {brewer.name} - {brewer.material} - {brewer.type}
-              </Link>
-              <button 
-                onClick={(e) => handleDelete(e, brewer.id)}
-                style={{ 
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  padding: '5px 10px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  minWidth: '70px'
-                }}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
+		const confirmDelete = window.confirm(
+			"Are you sure you want to delete this brewer? This will affect any brew logs using this brewer."
+		);
+		if (confirmDelete) {
+			try {
+				await deleteMutation.mutateAsync(brewerId);
+			} catch (err) {
+				console.error("Failed to delete brewer:", err);
+			}
+		}
+	};
+
+	if (isInitialLoading) return <div>Loading...</div>;
+	if (error) return <div>Error: {error.message}</div>;
+
+	return (
+		<div>
+			<h2>Brewers</h2>
+			<form onSubmit={handleSubmit}>
+				<div>
+					<label>
+						Name:
+						<input
+							type="text"
+							value={newBrewer.name}
+							onChange={(e) =>
+								setNewBrewer({
+									...newBrewer,
+									name: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
+					</label>
+				</div>
+				<div>
+					<label>
+						Material:
+						<input
+							type="text"
+							value={newBrewer.material}
+							onChange={(e) =>
+								setNewBrewer({
+									...newBrewer,
+									material: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
+					</label>
+				</div>
+				<div>
+					<label>
+						Type:
+						<select
+							value={newBrewer.type}
+							onChange={(e) =>
+								setNewBrewer({
+									...newBrewer,
+									type: e.target.value,
+								})
+							}
+							disabled={createMutation.isPending}
+						>
+							<option>Pour Over</option>
+							<option>Espresso</option>
+							<option>Immersion</option>
+						</select>
+					</label>
+				</div>
+				<button type="submit" disabled={createMutation.isPending}>
+					{createMutation.isPending ? "Adding..." : "Add Brewer"}
+				</button>
+			</form>
+
+			<div>
+				<h3>Saved Brewers</h3>
+				<ul>
+					{brewers.map((brewer) => (
+						<li
+							key={brewer.id}
+							style={{
+								marginBottom: "15px",
+								display: "flex",
+								alignItems: "center",
+								gap: "10px",
+							}}
+						>
+							<Link
+								to={`/brewers/${brewer.id}`}
+								style={{ flex: 1 }}
+							>
+								{brewer.name} - {brewer.material} -{" "}
+								{brewer.type}
+							</Link>
+							<button
+								onClick={(e) => handleDelete(e, brewer.id)}
+								disabled={deleteMutation.isPending}
+								style={{
+									backgroundColor: "#dc3545",
+									color: "white",
+									border: "none",
+									padding: "5px 10px",
+									borderRadius: "4px",
+									cursor: deleteMutation.isPending
+										? "not-allowed"
+										: "pointer",
+									minWidth: "70px",
+									opacity: deleteMutation.isPending ? 0.7 : 1,
+								}}
+							>
+								{deleteMutation.isPending
+									? "Deleting..."
+									: "Delete"}
+							</button>
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	);
 }
