@@ -46,7 +46,6 @@
 		color: white;
 		padding: 0.5rem;
 		border-radius: 0.25rem;
-		margin-top: var(--spacing-2);
 
 		&:hover {
 			background-color: #2563eb;
@@ -79,22 +78,14 @@
 }
 
 .form {
-	&-group {
-		margin-bottom: 1rem;
-	}
-
-	&-label {
-		display: block;
-		color: #374151;
-		margin-bottom: 0.5rem;
-	}
+	margin-top: var(--spacing-3);
 
 	&-input {
 		width: 100%;
-		padding: 0.5rem;
 		border: 1px solid #d1d5db;
-		border-radius: 0.25rem;
-		margin-top: 0.25rem;
+		padding: var(--spacing-1);
+		border-radius: var(--spacing-05);
+		margin-bottom: var(--spacing-1);
 	}
 }
 

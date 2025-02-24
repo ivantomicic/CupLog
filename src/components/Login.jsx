@@ -78,49 +78,6 @@ export default function Login() {
 					</div>
 					<h2 className="login-title">Welcome to CupLog</h2>
 					{error && <div className="error-message">{error}</div>}
-					<form onSubmit={handleSubmit}>
-						<div className="form-group">
-							<label className="form-label">
-								Email:
-								<input
-									type="email"
-									value={credentials.email}
-									onChange={(e) =>
-										setCredentials({
-											...credentials,
-											email: e.target.value,
-										})
-									}
-									className="form-input"
-									required
-								/>
-							</label>
-						</div>
-						<div className="form-group">
-							<label className="form-label">
-								Password:
-								<input
-									type="password"
-									value={credentials.password}
-									onChange={(e) =>
-										setCredentials({
-											...credentials,
-											password: e.target.value,
-										})
-									}
-									className="form-input"
-									required
-								/>
-							</label>
-						</div>
-						<button
-							type="submit"
-							className="login-button"
-							disabled={isLoading}
-						>
-							{isLoading ? "Logging in..." : "Login"}
-						</button>
-					</form>
 
 					<div className="login-subtitle">
 						Log your brews, improve your extractions...
@@ -171,6 +128,42 @@ export default function Login() {
 							</Link>
 						</p>
 					</div>
+
+					<form className="form" onSubmit={handleSubmit}>
+						<input
+							type="email"
+							value={credentials.email}
+							onChange={(e) =>
+								setCredentials({
+									...credentials,
+									email: e.target.value,
+								})
+							}
+							className="form-input"
+							placeholder="Email"
+							required
+						/>
+						<input
+							type="password"
+							value={credentials.password}
+							onChange={(e) =>
+								setCredentials({
+									...credentials,
+									password: e.target.value,
+								})
+							}
+							className="form-input"
+							placeholder="Password"
+							required
+						/>
+						<button
+							type="submit"
+							className="login-button"
+							disabled={isLoading}
+						>
+							{isLoading ? "Logging in..." : "Login"}
+						</button>
+					</form>
 				</div>
 			</div>
 		</div>
