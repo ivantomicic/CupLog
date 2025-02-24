@@ -8,12 +8,12 @@
 
 	&-card {
 		margin: 0 auto;
-		box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-			0 8px 10px -6px rgb(0 0 0 / 0.1);
+		box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px;
 		border-radius: 1rem;
 		overflow: hidden;
-		padding: 1rem;
+		padding: var(--spacing-2);
 		background-color: white;
+		padding-bottom: 40px;
 	}
 
 	&-form-container {
@@ -23,7 +23,12 @@
 	&-title {
 		font-size: 1.5rem;
 		font-weight: bold;
-		margin-bottom: 1.5rem;
+		margin: 0;
+		text-align: center;
+	}
+
+	&-subtitle {
+		margin: var(--spacing-2) 0 var(--spacing-3) 0;
 		text-align: center;
 	}
 
@@ -33,7 +38,7 @@
 		color: white;
 		padding: 0.5rem;
 		border-radius: 0.25rem;
-		margin-bottom: 1.5rem;
+		margin-top: var(--spacing-2);
 
 		&:hover {
 			background-color: #2563eb;
@@ -94,14 +99,23 @@
 .google-button {
 	width: 100%;
 	background-color: white;
-	border: 1px solid #d1d5db;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	border-radius: 100px;
 	color: #374151;
-	padding: 0.5rem;
-	border-radius: 0.25rem;
+	padding: 12px;
+	width: 100%;
+	max-width: 280px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 0.5rem;
+	gap: var(--spacing-1);
+	font-weight: 600;
+	margin: var(--spacing-2) auto 0 auto;
+
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 
 	&:hover {
 		background-color: #f9fafb;
@@ -110,7 +124,7 @@
 
 .signup {
 	&-container {
-		margin-top: 1rem;
+		margin-top: var(--spacing-3);
 		text-align: center;
 	}
 
@@ -119,7 +133,7 @@
 	}
 
 	&-link {
-		color: #3b82f6;
+		color: var(--colors-brand-primary);
 		text-decoration: none;
 
 		&:hover {
