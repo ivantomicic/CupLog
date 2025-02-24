@@ -41,7 +41,11 @@ export default function Navigation() {
 					>
 						<motion.div
 							whileTap={{ scale: 0.9 }}
-							transition={{ type: "spring", stiffness: 400, damping: 17 }}
+							transition={{
+								type: "spring",
+								stiffness: 400,
+								damping: 17,
+							}}
 						>
 							<item.icon />
 						</motion.div>
@@ -74,7 +78,10 @@ export default function Navigation() {
 				<div className="user-profile">
 					<div className="user-avatar">
 						{user?.user_metadata?.avatar_url ? (
-							<img src={user.user_metadata.avatar_url} alt="Avatar" />
+							<img
+								src={user.user_metadata.avatar_url}
+								alt="Avatar"
+							/>
 						) : (
 							<div className="avatar-placeholder">
 								{user?.email?.[0]?.toUpperCase()}
