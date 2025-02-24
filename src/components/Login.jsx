@@ -78,7 +78,7 @@ export default function Login() {
 					</div>
 					<h2 className="login-title">Welcome to CupLog</h2>
 					{error && <div className="error-message">{error}</div>}
-					<form style={{ display: "none" }} onSubmit={handleSubmit}>
+					<form onSubmit={handleSubmit}>
 						<div className="form-group">
 							<label className="form-label">
 								Email:
