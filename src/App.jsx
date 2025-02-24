@@ -10,7 +10,6 @@ import Home from "./components/Home";
 import Brewers from "./components/Brewers";
 import Grinders from "./components/Grinders";
 import Coffee from "./components/Coffee";
-import Brews from "./components/Brews";
 import BrewDetails from "./components/BrewDetails";
 import CoffeeDetails from "./components/CoffeeDetails";
 import GrinderDetails from "./components/GrinderDetails";
@@ -21,6 +20,7 @@ import Settings from "./components/Settings";
 import UpdatePassword from "./components/UpdatePassword";
 import PrivateRoute from "./components/PrivateRoute";
 import { logout, onAuthStateChange } from "./utils/auth";
+import NewBrew from "./components/NewBrew";
 
 function NavBar() {
 	const navigate = useNavigate();
@@ -59,9 +59,6 @@ function NavBar() {
 				</li>
 				<li>
 					<Link to="/coffee">Coffee</Link>
-				</li>
-				<li>
-					<Link to="/brews">Brews</Link>
 				</li>
 				<li>
 					<Link to="/settings">Settings</Link>
@@ -140,10 +137,10 @@ function App() {
 					/>
 
 					<Route
-						path="/brews"
+						path="/brews/new"
 						element={
 							<PrivateRoute>
-								<Brews />
+								<NewBrew />
 							</PrivateRoute>
 						}
 					/>
