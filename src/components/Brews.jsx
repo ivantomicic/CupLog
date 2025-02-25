@@ -4,13 +4,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
 	getBrews,
 	createBrew,
-	deleteBrew,
 	getCoffees,
 	getGrinders,
 	getBrewers,
 	updateBrew,
 } from "../utils/supabase-queries";
 import { analyzeBrewData } from "../utils/openai";
+import Loader from "./Loader";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -112,16 +112,6 @@ export default function Brews() {
 		},
 	});
 
-	// Mutation for deleting brews
-	const deleteMutation = useMutation({
-		mutationFn: deleteBrew,
-		onSuccess: (_, brewId) => {
-			queryClient.setQueryData(["brews"], (old) =>
-				old?.filter((brew) => brew.id !== brewId)
-			);
-		},
-	});
-
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
 		if (file) {
@@ -176,26 +166,10 @@ export default function Brews() {
 		}
 	};
 
-	const handleDelete = async (e, brewId) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this brew log?"
-		);
-		if (confirmDelete) {
-			try {
-				await deleteMutation.mutateAsync(brewId);
-			} catch (err) {
-				console.error("Failed to delete brew:", err);
-			}
-		}
-	};
-
 	// Combine all errors
 	const error = brewsError || coffeesError || grindersError || brewersError;
 	if (error) return <div>Error: {error.message}</div>;
-	if (isLoadingBrews) return <div>Loading...</div>;
+	if (isLoadingBrews) return <Loader />;
 
 	const selectedCoffee = coffees.find((c) => c.id === newBrew.coffeeId);
 
@@ -471,43 +445,32 @@ export default function Brews() {
 								gap: "10px",
 							}}
 						>
-							<Link to={`/brews/${brew.id}`} style={{ flex: 1 }}>
-								{brew.coffee?.name} -{" "}
-								{new Date(brew.date).toLocaleString()} -{" "}
-								{brew.dose}g in, {brew.yield}g out,{" "}
-								{brew.brew_time}s
-							</Link>
-							{brew.notes && <p>Notes: {brew.notes}</p>}
-							{brew.image_url && (
-								<img
-									src={brew.image_url}
-									alt="Brew"
-									style={{
-										maxWidth: "100px",
-										display: "block",
-									}}
-								/>
-							)}
-							<button
-								onClick={(e) => handleDelete(e, brew.id)}
-								disabled={deleteMutation.isPending}
+							<Link
+								to={`/brews/${brew.id}`}
 								style={{
-									backgroundColor: "#dc3545",
-									color: "white",
-									border: "none",
-									padding: "5px 10px",
-									borderRadius: "4px",
-									cursor: deleteMutation.isPending
-										? "not-allowed"
-										: "pointer",
-									minWidth: "70px",
-									opacity: deleteMutation.isPending ? 0.7 : 1,
+									flex: 1,
+									textDecoration: "none",
+									color: "inherit",
 								}}
 							>
-								{deleteMutation.isPending
-									? "Deleting..."
-									: "Delete"}
-							</button>
+								<div>
+									{brew.coffee?.name} -{" "}
+									{new Date(brew.date).toLocaleString()} -{" "}
+									{brew.dose}g in, {brew.yield}g out,{" "}
+									{brew.brew_time}s
+									{brew.notes && <p>Notes: {brew.notes}</p>}
+									{brew.image_url && (
+										<img
+											src={brew.image_url}
+											alt="Brew"
+											style={{
+												maxWidth: "100px",
+												display: "block",
+											}}
+										/>
+									)}
+								</div>
+							</Link>
 						</li>
 					))}
 				</ul>

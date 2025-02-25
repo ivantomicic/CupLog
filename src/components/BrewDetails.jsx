@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getBrews, updateBrew } from "../utils/supabase-queries";
+import { getBrews, updateBrew, deleteBrew } from "../utils/supabase-queries";
 import { analyzeBrewData } from "../utils/openai";
 import Loader from "./Loader";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Helper function to format date for datetime-local input
 const formatDateForInput = (dateString) => {
@@ -19,6 +20,7 @@ export default function BrewDetails() {
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		loadBrew();
@@ -105,6 +107,22 @@ export default function BrewDetails() {
 		const file = e.target.files[0];
 		if (file) {
 			setEditedBrew((prev) => ({ ...prev, flow_chart: file }));
+		}
+	};
+
+	const handleDelete = async () => {
+		const confirmDelete = window.confirm(
+			"Are you sure you want to delete this brew log?"
+		);
+
+		if (confirmDelete) {
+			try {
+				await deleteBrew(id);
+				await queryClient.invalidateQueries({ queryKey: ["brews"] });
+				navigate("/brews");
+			} catch (err) {
+				setError(err.message);
+			}
 		}
 	};
 
@@ -391,6 +409,20 @@ export default function BrewDetails() {
 							style={{ marginRight: "0.5rem" }}
 						>
 							Edit
+						</button>
+						<button
+							onClick={handleDelete}
+							style={{
+								marginRight: "0.5rem",
+								backgroundColor: "#dc3545",
+								color: "white",
+								border: "none",
+								padding: "8px 16px",
+								borderRadius: "4px",
+								cursor: "pointer",
+							}}
+						>
+							Delete
 						</button>
 						<button
 							onClick={handleAnalyze}

@@ -7,6 +7,7 @@ import {
 	deleteBrewer,
 } from "../utils/supabase-queries";
 import { getCurrentUser } from "../utils/supabase";
+import Loader from "./Loader";
 
 export default function Brewers() {
 	const queryClient = useQueryClient();
@@ -82,7 +83,7 @@ export default function Brewers() {
 		}
 	};
 
-	if (isInitialLoading) return <div>Loading...</div>;
+	if (isInitialLoading) return <Loader />;
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (

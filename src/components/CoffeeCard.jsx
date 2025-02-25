@@ -1,4 +1,8 @@
 import { Link } from "react-router-dom";
+import { MdOutlineAccessTime } from "react-icons/md";
+import { IoScaleOutline } from "react-icons/io5";
+import { BsCup } from "react-icons/bs";
+import { TbTimeDurationOff } from "react-icons/tb";
 
 function CoffeeCard({ brew, onDelete, isDeleting }) {
 	const handleDelete = async (e) => {
@@ -14,42 +18,64 @@ function CoffeeCard({ brew, onDelete, isDeleting }) {
 	};
 
 	return (
-		<li className="coffee-card">
-			<Link to={`/brews/${brew.id}`} className="coffee-card-content">
-				<div className="coffee-card-header">
-					<span className="coffee-name">{brew.coffee?.name}</span>
-					<span className="brew-date">
-						{new Date(brew.date).toLocaleString()}
-					</span>
-				</div>
+		<Link to={`/brews/${brew.id}`} className="coffee-card">
+			<div className="coffee-card-image">
+				{brew.image_url ? (
+					<img src={brew.image_url} alt="Brew" />
+				) : (
+					<img src="/placeholder.png" alt="Brew" />
+				)}
 
-				<div className="brew-stats">
-					<span>{brew.dose}g in</span>
-					<span>{brew.yield}g out</span>
-					<span>{brew.brew_time}s</span>
+				<div className="information">
+					{new Date(brew.date).toLocaleDateString("en-US", {
+						weekday: "long",
+						day: "2-digit",
+						month: "long",
+						year: "numeric",
+					})}{" "}
+					-{" "}
+					{new Date(brew.date).toLocaleTimeString("en-US", {
+						hour: "2-digit",
+						minute: "2-digit",
+						hour12: false,
+					})}
+					h
+				</div>
+			</div>
+
+			<div className="coffee-card-content">
+				<img src="/boo.png" alt="" className="coffee-card-roastery" />
+
+				<h2 className="coffee-card-name">{brew.coffee?.name}</h2>
+
+				<div className="coffee-card-flex-info">
+					<p className="coffee-card-brew-type">Espresso</p>
+
+					<p className="coffee-card-brew-info">
+						<IoScaleOutline />
+						{brew.dose}s
+					</p>
+					<p className="coffee-card-brew-info">
+						<MdOutlineAccessTime />
+						{brew.brew_time}s
+					</p>
+					<p className="coffee-card-brew-info">
+						<BsCup />
+						{brew.yield}g
+					</p>
+					<p className="coffee-card-brew-info">
+						<TbTimeDurationOff />
+						1:{brew.yield / brew.dose}
+					</p>
 				</div>
 
 				{brew.notes && (
-					<p className="brew-notes">Notes: {brew.notes}</p>
+					<p className="coffee-card-brew-notes">
+						Notes: {brew.notes}
+					</p>
 				)}
-
-				{brew.image_url && (
-					<img
-						src={brew.image_url}
-						alt="Brew"
-						className="brew-image"
-					/>
-				)}
-			</Link>
-
-			<button
-				onClick={handleDelete}
-				disabled={isDeleting}
-				className="delete-button"
-			>
-				{isDeleting ? "Deleting..." : "Delete"}
-			</button>
-		</li>
+			</div>
+		</Link>
 	);
 }
 
