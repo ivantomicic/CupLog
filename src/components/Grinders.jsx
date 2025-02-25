@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Loader from "./Loader";
 import {
 	getGrinders,
 	createGrinder,
@@ -94,7 +95,7 @@ export default function Grinders() {
 		}
 	};
 
-	if (isInitialLoading) return <div>Loading...</div>;
+	if (isInitialLoading) return <Loader />;
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (

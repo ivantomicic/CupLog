@@ -18,22 +18,23 @@
 	--spacing-8: 64px;
 
 	--colors-brand-primary: #264ba2;
-		--colors-nav-bg: rgba(18, 18, 18, 0.95);
-		--colors-nav-border: rgba(255, 255, 255, 0.08);
+	--colors-nav-bg: rgba(255, 255, 255, 0.75);
+	--colors-nav-border: rgba(0, 0, 0, 0.1);
 	--colors-nav-active: var(--colors-brand-primary);
-		--colors-nav-inactive: #999;
-
+	--colors-nav-inactive: #999;
 }
 
 body {
 	margin: 0;
-	background-color: #efeff1;
+	background-color: #f7f7f7;
 }
 
 // Main content padding for navigation
 .main-content {
 	padding: var(--spacing-2);
-	padding-bottom: calc(var(--spacing-8) + var(--spacing-6)); // Space for mobile nav + FAB
+	padding-bottom: calc(
+		var(--spacing-8) + var(--spacing-6)
+	); // Space for mobile nav + FAB
 
 	@media (min-width: 768px) {
 		margin-left: 240px; // Space for desktop nav

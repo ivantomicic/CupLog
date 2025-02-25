@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrews, deleteBrew } from "../utils/supabase-queries";
+import Loader from "./Loader";
+import CoffeeCard from "./CoffeeCard";
 
 function Home() {
 	const queryClient = useQueryClient();
@@ -27,61 +29,30 @@ function Home() {
 		},
 	});
 
-	const handleDelete = async (e, brewId) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this brew log?"
-		);
-		if (confirmDelete) {
-			try {
-				await deleteMutation.mutateAsync(brewId);
-			} catch (err) {
-				console.error("Failed to delete brew:", err);
-			}
-		}
-	};
-
 	if (brewsError) return <div>Error: {brewsError.message}</div>;
-	if (isLoadingBrews) return <div>Loading...</div>;
+	if (isLoadingBrews) return <Loader />;
 
 	return (
 		<div>
 			<h2>Latest Brews</h2>
-			<Link to="/brews/new">Log New Brew</Link>
 
 			<br />
 			<br />
 
-			<ul>
+			<ul className="coffee-cards">
 				{brews.map((brew) => (
-					<li key={brew.id}>
-						<Link to={`/brews/${brew.id}`} style={{ flex: 1 }}>
-							{brew.coffee?.name} -{" "}
-							{new Date(brew.date).toLocaleString()} - {brew.dose}
-							g in, {brew.yield}g out, {brew.brew_time}s
-						</Link>
-						{brew.notes && <p>Notes: {brew.notes}</p>}
-						{brew.image_url && (
-							<img
-								src={brew.image_url}
-								alt="Brew"
-								style={{
-									maxWidth: "100px",
-									display: "block",
-								}}
-							/>
-						)}
-						<button
-							onClick={(e) => handleDelete(e, brew.id)}
-							disabled={deleteMutation.isPending}
-						>
-							{deleteMutation.isPending
-								? "Deleting..."
-								: "Delete"}
-						</button>
-					</li>
+					<CoffeeCard
+						key={brew.id}
+						brew={brew}
+						onDelete={async (brewId) => {
+							try {
+								await deleteMutation.mutateAsync(brewId);
+							} catch (err) {
+								console.error("Failed to delete brew:", err);
+							}
+						}}
+						isDeleting={deleteMutation.isPending}
+					/>
 				))}
 			</ul>
 		</div>
