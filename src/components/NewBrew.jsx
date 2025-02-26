@@ -10,7 +10,7 @@ import {
 	getBrews,
 } from "../utils/supabase-queries";
 import { analyzeBrewData } from "../utils/openai";
-import PageHeader from "./PageHeader";
+import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -42,6 +42,9 @@ export default function NewBrew() {
 		aiSuggestions: null,
 		roastDateId: "",
 	});
+
+	// Update the page header
+	useUpdatePageHeader("Log New Brew");
 
 	// Queries for all required data
 	const { data: coffees = [], error: coffeesError } = useQuery({
@@ -148,8 +151,6 @@ export default function NewBrew() {
 
 	return (
 		<>
-			<PageHeader title="Log New Brew" />
-
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
 					<div>
@@ -410,7 +411,6 @@ export default function NewBrew() {
 							: "Log Brew"}
 					</button>
 				</form>
-
 				{createMutation.isPending && (
 					<div>
 						<h3>AI Analysis in Progress</h3>

@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrews, deleteBrew } from "../utils/supabase-queries";
 import Loader from "./Loader";
 import CoffeeCard from "./CoffeeCard";
-import PageHeader from "./PageHeader";
+import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
+
 function Home() {
 	const queryClient = useQueryClient();
+
+	// Update the page header
+	useUpdatePageHeader("Latest Brews", "/brews/new");
 
 	// Query for brews
 	const {
@@ -34,8 +37,6 @@ function Home() {
 
 	return (
 		<>
-			<PageHeader title="Latest Brews" buttonTarget="/brews/new" />
-
 			<main className="main-content">
 				<ul className="coffee-cards">
 					{brews.map((brew) => (

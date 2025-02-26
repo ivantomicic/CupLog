@@ -7,8 +7,8 @@ import {
 	deleteBrewer,
 } from "../utils/supabase-queries";
 import { getCurrentUser } from "../utils/supabase";
-import PageHeader from "./PageHeader";
 import Loader from "./Loader";
+import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 export default function Brewers() {
 	const queryClient = useQueryClient();
@@ -17,6 +17,9 @@ export default function Brewers() {
 		material: "",
 		type: "Pour Over",
 	});
+
+	// Update the page header
+	useUpdatePageHeader("Brewers", "/brewers/new");
 
 	// Query for fetching brewers with caching
 	const {
@@ -89,8 +92,6 @@ export default function Brewers() {
 
 	return (
 		<>
-			<PageHeader title="Brewers" />
-
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
 					<div>

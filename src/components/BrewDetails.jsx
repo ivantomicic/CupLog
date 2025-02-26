@@ -4,6 +4,7 @@ import { getBrews, updateBrew, deleteBrew } from "../utils/supabase-queries";
 import { analyzeBrewData } from "../utils/openai";
 import Loader from "./Loader";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePageHeader } from "../context/PageHeaderContext";
 
 // Helper function to format date for datetime-local input
 const formatDateForInput = (dateString) => {
@@ -21,6 +22,7 @@ export default function BrewDetails() {
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const queryClient = useQueryClient();
+	const { updateHeader } = usePageHeader();
 
 	useEffect(() => {
 		loadBrew();
@@ -35,6 +37,16 @@ export default function BrewDetails() {
 				return;
 			}
 			setBrew(brew);
+
+			// Update the page header with the coffee name
+			if (brew.coffee?.name) {
+				updateHeader({
+					title: `${brew.coffee.name} Brew`,
+				});
+			} else {
+				updateHeader({ title: "Brew Details" });
+			}
+
 			setEditedBrew({
 				...brew,
 				coffee_id: brew.coffee?.id,
@@ -50,6 +62,16 @@ export default function BrewDetails() {
 		}
 	};
 
+	// Set a default title while loading
+	useEffect(() => {
+		updateHeader({ title: "" });
+
+		// Clean up when component unmounts
+		return () => {
+			updateHeader({ title: "" });
+		};
+	}, [updateHeader]);
+
 	const handleSave = async () => {
 		try {
 			setError(null);
@@ -60,6 +82,11 @@ export default function BrewDetails() {
 			// Reload the brew to get the updated data
 			await loadBrew();
 			setIsEditing(false);
+
+			// Update header to remove "Editing" prefix
+			if (brew.coffee?.name) {
+				updateHeader({ title: `${brew.coffee.name} Brew` });
+			}
 		} catch (err) {
 			setError(err.message);
 		}
@@ -126,6 +153,16 @@ export default function BrewDetails() {
 		}
 	};
 
+	// Update header when editing state changes
+	useEffect(() => {
+		if (brew?.coffee?.name) {
+			const title = isEditing
+				? `Editing: ${brew.coffee.name} Brew`
+				: `${brew.coffee.name} Brew`;
+			updateHeader({ title });
+		}
+	}, [isEditing, brew?.coffee?.name, updateHeader]);
+
 	if (loading) return <Loader />;
 	if (error) return <div>Error: {error}</div>;
 	if (!brew) return <div>Brew not found</div>;
@@ -136,7 +173,7 @@ export default function BrewDetails() {
 	);
 
 	return (
-		<div>
+		<main className="main-content">
 			{brew.image_url && (
 				<div>
 					<img
@@ -146,9 +183,6 @@ export default function BrewDetails() {
 					/>
 				</div>
 			)}
-
-			<button onClick={() => navigate("/brews")}>Back to Brews</button>
-			<h2>Brew Details</h2>
 
 			{isEditing ? (
 				<div>
@@ -464,6 +498,6 @@ export default function BrewDetails() {
 					<p>Analyzing your brew data... Please wait.</p>
 				</div>
 			)}
-		</div>
+		</main>
 	);
 }

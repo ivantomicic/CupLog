@@ -9,7 +9,7 @@ import {
 	deleteCoffee,
 	createRoastDate,
 } from "../utils/supabase-queries";
-import PageHeader from "./PageHeader";
+import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -234,6 +234,9 @@ export default function Coffee() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const queryClient = useQueryClient();
 
+	// Update the page header
+	useUpdatePageHeader("Coffee");
+
 	// Query for fetching coffees with caching
 	const {
 		data: coffees = [],
@@ -277,8 +280,6 @@ export default function Coffee() {
 
 	return (
 		<>
-			<PageHeader title="Coffee" />
-
 			<main className="main-content">
 				<button
 					className="add-button"

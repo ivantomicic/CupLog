@@ -14,28 +14,32 @@ import UpdatePassword from "./components/UpdatePassword";
 import PrivateRoute from "./components/PrivateRoute";
 import Navigation from "./components/Navigation";
 import NewBrew from "./components/NewBrew";
+import PageHeader from "./components/PageHeader";
+import { PageHeaderProvider } from "./context/PageHeaderContext";
 
 function App() {
 	return (
 		<Router>
-			<div>
-				<Routes>
-					<Route path="/login" element={<Login />} />
-					<Route path="/signup" element={<SignUp />} />
-					<Route
-						path="/update-password"
-						element={<UpdatePassword />}
-					/>
-					<Route
-						path="/*"
-						element={
-							<PrivateRoute>
-								<PrivateRoutes />
-							</PrivateRoute>
-						}
-					/>
-				</Routes>
-			</div>
+			<PageHeaderProvider>
+				<div>
+					<Routes>
+						<Route path="/login" element={<Login />} />
+						<Route path="/signup" element={<SignUp />} />
+						<Route
+							path="/update-password"
+							element={<UpdatePassword />}
+						/>
+						<Route
+							path="/*"
+							element={
+								<PrivateRoute>
+									<PrivateRoutes />
+								</PrivateRoute>
+							}
+						/>
+					</Routes>
+				</div>
+			</PageHeaderProvider>
 		</Router>
 	);
 }
@@ -44,6 +48,7 @@ function PrivateRoutes() {
 	return (
 		<>
 			<Navigation />
+			<PageHeader />
 
 			<Routes>
 				<Route path="/brewers" element={<Brewers />} />

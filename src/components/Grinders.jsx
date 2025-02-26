@@ -7,7 +7,7 @@ import {
 	createGrinder,
 	deleteGrinder,
 } from "../utils/supabase-queries";
-import PageHeader from "./PageHeader";
+import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 export default function Grinders() {
 	const queryClient = useQueryClient();
@@ -18,6 +18,9 @@ export default function Grinders() {
 		idealFor: "",
 	});
 	const [deletingIds, setDeletingIds] = useState(new Set());
+
+	// Update the page header
+	useUpdatePageHeader("Grinders");
 
 	// Query for fetching grinders with caching
 	const {
@@ -101,8 +104,6 @@ export default function Grinders() {
 
 	return (
 		<>
-			<PageHeader title="Grinders" />
-
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
 					<div>
