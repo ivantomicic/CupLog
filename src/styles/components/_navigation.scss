@@ -181,7 +181,7 @@
 	position: fixed;
 	right: var(--spacing-3);
 	bottom: calc(
-		var(--spacing-8) + var(--spacing-2) + env(safe-area-inset-bottom)
+		var(--spacing-8) + var(--spacing-1) + env(safe-area-inset-bottom)
 	);
 	width: 56px;
 	height: 56px;

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrews, deleteBrew } from "../utils/supabase-queries";
 import Loader from "./Loader";
 import CoffeeCard from "./CoffeeCard";
-
+import PageHeader from "./PageHeader";
 function Home() {
 	const queryClient = useQueryClient();
 
@@ -33,11 +33,8 @@ function Home() {
 	if (isLoadingBrews) return <Loader />;
 
 	return (
-		<div>
-			<h2>Latest Brews</h2>
-
-			<br />
-			<br />
+		<>
+			<PageHeader title="Latest Brews" />
 
 			<ul className="coffee-cards">
 				{brews.map((brew) => (
@@ -55,7 +52,7 @@ function Home() {
 					/>
 				))}
 			</ul>
-		</div>
+		</>
 	);
 }
 

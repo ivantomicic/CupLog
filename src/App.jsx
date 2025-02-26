@@ -1,8 +1,4 @@
-import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Brewers from "./components/Brewers";
 import Grinders from "./components/Grinders";
@@ -26,7 +22,10 @@ function App() {
 				<Routes>
 					<Route path="/login" element={<Login />} />
 					<Route path="/signup" element={<SignUp />} />
-					<Route path="/update-password" element={<UpdatePassword />} />
+					<Route
+						path="/update-password"
+						element={<UpdatePassword />}
+					/>
 					<Route
 						path="/*"
 						element={

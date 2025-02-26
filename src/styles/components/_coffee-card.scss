@@ -10,6 +10,7 @@
 }
 
 .coffee-card {
+	display: block;
 	border: 1px solid var(--colors-border);
 	border-radius: var(--spacing-1);
 	overflow: hidden;

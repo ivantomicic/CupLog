@@ -17,6 +17,8 @@ const navItems = [
 	{ to: "/brewers", icon: MdLocalCafe, label: "Brewers" },
 ];
 
+const MotionNavLink = motion(NavLink);
+
 export default function Navigation() {
 	const [user, setUser] = useState(null);
 
@@ -33,14 +35,49 @@ export default function Navigation() {
 			{/* Mobile Navigation */}
 			<nav className="navigation-mobile">
 				{navItems.map((item) => (
-					<NavLink
+					<MotionNavLink
 						key={item.to}
 						to={item.to}
 						className="navigation-mobile-item"
 						end={item.to === "/"}
+						whileTap={{ scale: 0.9 }}
+						transition={{
+							type: "spring",
+							stiffness: 400,
+							damping: 17,
+						}}
 					>
-						<motion.div
-							whileTap={{ scale: 0.9 }}
+						<item.icon />
+						{item.label}
+					</MotionNavLink>
+				))}
+			</nav>
+
+			{/* Desktop Navigation */}
+			<nav className="navigation-desktop">
+				<motion.div
+					className="logo"
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+					transition={{
+						type: "spring",
+						stiffness: 400,
+						damping: 17,
+					}}
+				>
+					<img src="/cuplog-icon.svg" alt="CupLog" />
+					<span>CupLog</span>
+				</motion.div>
+
+				<div className="navigation-desktop-items">
+					{navItems.map((item) => (
+						<MotionNavLink
+							key={item.to}
+							to={item.to}
+							className="navigation-desktop-item"
+							end={item.to === "/"}
+							whileHover={{ scale: 1.02 }}
+							whileTap={{ scale: 0.98 }}
 							transition={{
 								type: "spring",
 								stiffness: 400,
@@ -48,35 +85,22 @@ export default function Navigation() {
 							}}
 						>
 							<item.icon />
-						</motion.div>
-						{item.label}
-					</NavLink>
-				))}
-			</nav>
-
-			{/* Desktop Navigation */}
-			<nav className="navigation-desktop">
-				<div className="logo">
-					<img src="/cuplog-icon.svg" alt="CupLog" />
-					<span>CupLog</span>
-				</div>
-
-				<div className="navigation-desktop-items">
-					{navItems.map((item) => (
-						<NavLink
-							key={item.to}
-							to={item.to}
-							className="navigation-desktop-item"
-							end={item.to === "/"}
-						>
-							<item.icon />
 							<span>{item.label}</span>
-						</NavLink>
+						</MotionNavLink>
 					))}
 				</div>
 
 				<div className="user-profile">
-					<div className="user-avatar">
+					<motion.div
+						className="user-avatar"
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
+						transition={{
+							type: "spring",
+							stiffness: 400,
+							damping: 17,
+						}}
+					>
 						{user?.user_metadata?.avatar_url ? (
 							<img
 								src={user.user_metadata.avatar_url}
@@ -87,26 +111,35 @@ export default function Navigation() {
 								{user?.email?.[0]?.toUpperCase()}
 							</div>
 						)}
-					</div>
+					</motion.div>
 					<div className="user-info">
 						<span className="user-email">{user?.email}</span>
-						<NavLink to="/settings" className="settings-link">
+						<MotionNavLink
+							to="/settings"
+							className="settings-link"
+							whileHover={{ scale: 1.02 }}
+							whileTap={{ scale: 0.98 }}
+						>
 							Account Settings
-						</NavLink>
+						</MotionNavLink>
 					</div>
 				</div>
 			</nav>
 
 			{/* Floating Action Button */}
-			<NavLink to="/brews/new" className="fab">
-				<motion.div
-					whileHover={{ scale: 1.1 }}
-					whileTap={{ scale: 0.9 }}
-					transition={{ type: "spring", stiffness: 400, damping: 17 }}
-				>
-					<MdAdd />
-				</motion.div>
-			</NavLink>
+			<MotionNavLink
+				to="/brews/new"
+				className="fab"
+				whileHover={{ scale: 1.1 }}
+				whileTap={{ scale: 0.9 }}
+				transition={{
+					type: "spring",
+					stiffness: 400,
+					damping: 17,
+				}}
+			>
+				<MdAdd />
+			</MotionNavLink>
 		</>
 	);
 }
