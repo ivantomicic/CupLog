@@ -7,6 +7,7 @@ import {
 	createGrinder,
 	deleteGrinder,
 } from "../utils/supabase-queries";
+import PageHeader from "./PageHeader";
 
 export default function Grinders() {
 	const queryClient = useQueryClient();
@@ -99,84 +100,84 @@ export default function Grinders() {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div>
-			<h2>Grinders</h2>
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label>
-						Name:
-						<input
-							type="text"
-							value={newGrinder.name}
-							onChange={(e) =>
-								setNewGrinder({
-									...newGrinder,
-									name: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Burr Size:
-						<input
-							type="text"
-							value={newGrinder.burrSize}
-							onChange={(e) =>
-								setNewGrinder({
-									...newGrinder,
-									burrSize: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Burr Type:
-						<input
-							type="text"
-							value={newGrinder.burrType}
-							onChange={(e) =>
-								setNewGrinder({
-									...newGrinder,
-									burrType: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Ideal For:
-						<input
-							type="text"
-							value={newGrinder.idealFor}
-							onChange={(e) =>
-								setNewGrinder({
-									...newGrinder,
-									idealFor: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<button type="submit" disabled={createMutation.isPending}>
-					{createMutation.isPending ? "Adding..." : "Add Grinder"}
-				</button>
-			</form>
+		<>
+			<PageHeader title="Grinders" />
 
-			<div>
-				<h3>Saved Grinders</h3>
+			<main className="main-content">
+				<form onSubmit={handleSubmit}>
+					<div>
+						<label>
+							Name:
+							<input
+								type="text"
+								value={newGrinder.name}
+								onChange={(e) =>
+									setNewGrinder({
+										...newGrinder,
+										name: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Burr Size:
+							<input
+								type="text"
+								value={newGrinder.burrSize}
+								onChange={(e) =>
+									setNewGrinder({
+										...newGrinder,
+										burrSize: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Burr Type:
+							<input
+								type="text"
+								value={newGrinder.burrType}
+								onChange={(e) =>
+									setNewGrinder({
+										...newGrinder,
+										burrType: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Ideal For:
+							<input
+								type="text"
+								value={newGrinder.idealFor}
+								onChange={(e) =>
+									setNewGrinder({
+										...newGrinder,
+										idealFor: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<button type="submit" disabled={createMutation.isPending}>
+						{createMutation.isPending ? "Adding..." : "Add Grinder"}
+					</button>
+				</form>
+
 				<ul>
 					{grinders.map((grinder) => (
 						<li
@@ -221,7 +222,7 @@ export default function Grinders() {
 						</li>
 					))}
 				</ul>
-			</div>
-		</div>
+			</main>
+		</>
 	);
 }

@@ -7,6 +7,7 @@ import {
 	deleteBrewer,
 } from "../utils/supabase-queries";
 import { getCurrentUser } from "../utils/supabase";
+import PageHeader from "./PageHeader";
 import Loader from "./Loader";
 
 export default function Brewers() {
@@ -87,69 +88,69 @@ export default function Brewers() {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div>
-			<h2>Brewers</h2>
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label>
-						Name:
-						<input
-							type="text"
-							value={newBrewer.name}
-							onChange={(e) =>
-								setNewBrewer({
-									...newBrewer,
-									name: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Material:
-						<input
-							type="text"
-							value={newBrewer.material}
-							onChange={(e) =>
-								setNewBrewer({
-									...newBrewer,
-									material: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Type:
-						<select
-							value={newBrewer.type}
-							onChange={(e) =>
-								setNewBrewer({
-									...newBrewer,
-									type: e.target.value,
-								})
-							}
-							disabled={createMutation.isPending}
-						>
-							<option>Pour Over</option>
-							<option>Espresso</option>
-							<option>Immersion</option>
-						</select>
-					</label>
-				</div>
-				<button type="submit" disabled={createMutation.isPending}>
-					{createMutation.isPending ? "Adding..." : "Add Brewer"}
-				</button>
-			</form>
+		<>
+			<PageHeader title="Brewers" />
 
-			<div>
-				<h3>Saved Brewers</h3>
+			<main className="main-content">
+				<form onSubmit={handleSubmit}>
+					<div>
+						<label>
+							Name:
+							<input
+								type="text"
+								value={newBrewer.name}
+								onChange={(e) =>
+									setNewBrewer({
+										...newBrewer,
+										name: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Material:
+							<input
+								type="text"
+								value={newBrewer.material}
+								onChange={(e) =>
+									setNewBrewer({
+										...newBrewer,
+										material: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Type:
+							<select
+								value={newBrewer.type}
+								onChange={(e) =>
+									setNewBrewer({
+										...newBrewer,
+										type: e.target.value,
+									})
+								}
+								disabled={createMutation.isPending}
+							>
+								<option>Pour Over</option>
+								<option>Espresso</option>
+								<option>Immersion</option>
+							</select>
+						</label>
+					</div>
+					<button type="submit" disabled={createMutation.isPending}>
+						{createMutation.isPending ? "Adding..." : "Add Brewer"}
+					</button>
+				</form>
+
 				<ul>
 					{brewers.map((brewer) => (
 						<li
@@ -191,7 +192,7 @@ export default function Brewers() {
 						</li>
 					))}
 				</ul>
-			</div>
-		</div>
+			</main>
+		</>
 	);
 }

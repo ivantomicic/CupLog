@@ -1,0 +1,29 @@
+:root {
+	--spacing-05: 4px;
+	--spacing-1: 8px;
+	--spacing-2: 16px;
+	--spacing-3: 24px;
+	--spacing-4: 32px;
+	--spacing-5: 40px;
+	--spacing-6: 48px;
+	--spacing-7: 56px;
+	--spacing-8: 64px;
+
+	--colors-brand-primary: #264ba2;
+	--colors-brand-primary-light: #dce9fe;
+
+	--colors-nav-bg: rgba(255, 255, 255, 0.75);
+	--colors-nav-border: rgba(0, 0, 0, 0.1);
+	--colors-nav-active: var(--colors-brand-primary);
+	--colors-nav-inactive: #999;
+
+	--colors-border: #e0e0e0;
+
+	--colors-text-primary: #333;
+	--colors-text-secondary: #666;
+
+	--safe-area-inset-top: env(safe-area-inset-top);
+	--safe-area-inset-bottom: env(safe-area-inset-bottom);
+	--safe-area-inset-left: env(safe-area-inset-left);
+	--safe-area-inset-right: env(safe-area-inset-right);
+}

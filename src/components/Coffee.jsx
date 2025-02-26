@@ -9,6 +9,7 @@ import {
 	deleteCoffee,
 	createRoastDate,
 } from "../utils/supabase-queries";
+import PageHeader from "./PageHeader";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -275,62 +276,63 @@ export default function Coffee() {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div className="coffee-page">
-			<div className="header">
-				<h2>Coffee</h2>
+		<>
+			<PageHeader title="Coffee" />
+
+			<main className="main-content">
 				<button
 					className="add-button"
 					onClick={() => setIsModalOpen(true)}
 				>
 					Add Coffee
 				</button>
-			</div>
 
-			<div className="coffee-list">
-				{coffees.map((coffee) => {
-					const closestRoastDate = getClosestRoastDate(
-						coffee.roast_dates
-					);
-					return (
-						<div key={coffee.id} className="coffee-item">
-							<Link
-								to={`/coffee/${coffee.id}`}
-								className="coffee-details"
-							>
-								<h3>{coffee.name}</h3>
-								<p>
-									{coffee.country}, {coffee.region}
-								</p>
-								<p className="roast-type">
-									{coffee.roast} roast
-								</p>
-								{closestRoastDate && (
-									<p className="roast-date">
-										Latest roast:{" "}
-										{new Date(
-											closestRoastDate.date
-										).toLocaleDateString()}
+				<div className="coffee-list">
+					{coffees.map((coffee) => {
+						const closestRoastDate = getClosestRoastDate(
+							coffee.roast_dates
+						);
+						return (
+							<div key={coffee.id} className="coffee-item">
+								<Link
+									to={`/coffee/${coffee.id}`}
+									className="coffee-details"
+								>
+									<h3>{coffee.name}</h3>
+									<p>
+										{coffee.country}, {coffee.region}
 									</p>
-								)}
-							</Link>
-							<button
-								onClick={(e) => handleDelete(e, coffee.id)}
-								disabled={deleteMutation.isPending}
-								className="delete-button"
-							>
-								{deleteMutation.isPending
-									? "Deleting..."
-									: "Delete"}
-							</button>
-						</div>
-					);
-				})}
-			</div>
+									<p className="roast-type">
+										{coffee.roast} roast
+									</p>
+									{closestRoastDate && (
+										<p className="roast-date">
+											Latest roast:{" "}
+											{new Date(
+												closestRoastDate.date
+											).toLocaleDateString()}
+										</p>
+									)}
+								</Link>
+								<button
+									onClick={(e) => handleDelete(e, coffee.id)}
+									disabled={deleteMutation.isPending}
+									className="delete-button"
+								>
+									{deleteMutation.isPending
+										? "Deleting..."
+										: "Delete"}
+								</button>
+							</div>
+						);
+					})}
+				</div>
 
-			<AddCoffeeModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-			/>
-		</div>
+				<AddCoffeeModal
+					isOpen={isModalOpen}
+					onClose={() => setIsModalOpen(false)}
+				/>
+			</main>
+		</>
 	);
 }

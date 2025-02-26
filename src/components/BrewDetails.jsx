@@ -137,6 +137,16 @@ export default function BrewDetails() {
 
 	return (
 		<div>
+			{brew.image_url && (
+				<div>
+					<img
+						src={brew.image_url}
+						alt="Brew"
+						style={{ maxWidth: "300px" }}
+					/>
+				</div>
+			)}
+
 			<button onClick={() => navigate("/brews")}>Back to Brews</button>
 			<h2>Brew Details</h2>
 
@@ -380,17 +390,6 @@ export default function BrewDetails() {
 					<p>Dose: {brew.dose}g</p>
 					<p>Yield: {brew.yield}g</p>
 					{brew.notes && <p>Notes: {brew.notes}</p>}
-
-					{brew.image_url && (
-						<div>
-							<h3>Brew Image</h3>
-							<img
-								src={brew.image_url}
-								alt="Brew"
-								style={{ maxWidth: "300px" }}
-							/>
-						</div>
-					)}
 
 					{brew.flow_chart_url && (
 						<div>

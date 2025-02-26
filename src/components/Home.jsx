@@ -34,24 +34,29 @@ function Home() {
 
 	return (
 		<>
-			<PageHeader title="Latest Brews" />
+			<PageHeader title="Latest Brews" buttonTarget="/brews/new" />
 
-			<ul className="coffee-cards">
-				{brews.map((brew) => (
-					<CoffeeCard
-						key={brew.id}
-						brew={brew}
-						onDelete={async (brewId) => {
-							try {
-								await deleteMutation.mutateAsync(brewId);
-							} catch (err) {
-								console.error("Failed to delete brew:", err);
-							}
-						}}
-						isDeleting={deleteMutation.isPending}
-					/>
-				))}
-			</ul>
+			<main className="main-content">
+				<ul className="coffee-cards">
+					{brews.map((brew) => (
+						<CoffeeCard
+							key={brew.id}
+							brew={brew}
+							onDelete={async (brewId) => {
+								try {
+									await deleteMutation.mutateAsync(brewId);
+								} catch (err) {
+									console.error(
+										"Failed to delete brew:",
+										err
+									);
+								}
+							}}
+							isDeleting={deleteMutation.isPending}
+						/>
+					))}
+				</ul>
+			</main>
 		</>
 	);
 }

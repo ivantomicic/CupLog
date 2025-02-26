@@ -76,7 +76,7 @@
 	}
 
 	&-name {
-		@extend .h4;
+		@extend .h4 !optional;
 	}
 
 	&-flex-info {

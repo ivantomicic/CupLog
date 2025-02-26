@@ -1,12 +1,13 @@
 // Base styles
 @use "base";
 @use "typography";
+@use "variables";
 
 // Component styles
 @use "components/login";
 @use "components/image-marquee";
 @use "components/navigation";
-@import "components/coffee-card";
+@use "components/coffee-card";
 
 .loader-wrapper {
 	width: 100%;

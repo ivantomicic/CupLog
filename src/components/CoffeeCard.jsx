@@ -71,17 +71,20 @@ function CoffeeCard({ brew, onDelete, isDeleting }) {
 							<IoScaleOutline />
 							{brew.dose}s
 						</p>
+
 						<p className="coffee-card-brew-info">
 							<MdOutlineAccessTime />
 							{brew.brew_time}s
 						</p>
+
 						<p className="coffee-card-brew-info">
 							<BsCup />
 							{brew.yield}g
 						</p>
+
 						<p className="coffee-card-brew-info">
 							<TbTimeDurationOff />
-							1:{brew.yield / brew.dose}
+							1:{(brew.yield / brew.dose).toFixed(2)}
 						</p>
 					</div>
 

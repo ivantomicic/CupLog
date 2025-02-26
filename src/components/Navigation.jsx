@@ -1,12 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-	MdHome,
-	MdCoffee,
-	MdBlender,
-	MdLocalCafe,
-	MdAdd,
-} from "react-icons/md";
+import { MdHome, MdCoffee, MdBlender, MdLocalCafe } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../utils/auth";
 
@@ -125,21 +119,6 @@ export default function Navigation() {
 					</div>
 				</div>
 			</nav>
-
-			{/* Floating Action Button */}
-			<MotionNavLink
-				to="/brews/new"
-				className="fab"
-				whileHover={{ scale: 1.1 }}
-				whileTap={{ scale: 0.9 }}
-				transition={{
-					type: "spring",
-					stiffness: 400,
-					damping: 17,
-				}}
-			>
-				<MdAdd />
-			</MotionNavLink>
 		</>
 	);
 }

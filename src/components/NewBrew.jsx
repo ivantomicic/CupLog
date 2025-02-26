@@ -10,6 +10,7 @@ import {
 	getBrews,
 } from "../utils/supabase-queries";
 import { analyzeBrewData } from "../utils/openai";
+import PageHeader from "./PageHeader";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -146,263 +147,277 @@ export default function NewBrew() {
 	const selectedCoffee = coffees.find((c) => c.id === newBrew.coffeeId);
 
 	return (
-		<div>
-			<h2>Log New Brew</h2>
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label>
-						Coffee:
-						<select
-							value={newBrew.coffeeId}
-							onChange={handleCoffeeChange}
-							required
-							disabled={createMutation.isPending}
-						>
-							<option value="">Select Coffee</option>
-							{coffees.map((coffee) => {
-								const closestRoastDate =
-									coffee.roast_dates?.length > 0
-										? getClosestRoastDate(
-												coffee.roast_dates
-										  )
-										: null;
-								return (
-									<option key={coffee.id} value={coffee.id}>
-										{coffee.name} -{" "}
-										{closestRoastDate
-											? `Latest roast: ${new Date(
-													closestRoastDate.date
-											  ).toLocaleDateString()}`
-											: "No roast dates"}
-									</option>
-								);
-							})}
-						</select>
-					</label>
-				</div>
+		<>
+			<PageHeader title="Log New Brew" />
 
-				{selectedCoffee &&
-					selectedCoffee.roast_dates &&
-					selectedCoffee.roast_dates.length > 0 && (
-						<div>
-							<label>
-								Roast Date:
-								<select
-									value={newBrew.roastDateId}
-									onChange={(e) =>
-										setNewBrew({
-											...newBrew,
-											roastDateId: e.target.value,
-										})
-									}
-									required
-									disabled={createMutation.isPending}
-								>
-									<option value="">Select Roast Date</option>
-									{[...selectedCoffee.roast_dates]
-										.sort(
-											(a, b) =>
-												Math.abs(
-													new Date() -
-														new Date(a.date)
-												) -
-												Math.abs(
-													new Date() -
-														new Date(b.date)
-												)
-										)
-										.map((roastDate) => {
-											const isClosest =
-												roastDate ===
-												getClosestRoastDate(
-													selectedCoffee.roast_dates
+			<main className="main-content">
+				<form onSubmit={handleSubmit}>
+					<div>
+						<label>
+							Coffee:
+							<select
+								value={newBrew.coffeeId}
+								onChange={handleCoffeeChange}
+								required
+								disabled={createMutation.isPending}
+							>
+								<option value="">Select Coffee</option>
+								{coffees.map((coffee) => {
+									const closestRoastDate =
+										coffee.roast_dates?.length > 0
+											? getClosestRoastDate(
+													coffee.roast_dates
+											  )
+											: null;
+									return (
+										<option
+											key={coffee.id}
+											value={coffee.id}
+										>
+											{coffee.name} -{" "}
+											{closestRoastDate
+												? `Latest roast: ${new Date(
+														closestRoastDate.date
+												  ).toLocaleDateString()}`
+												: "No roast dates"}
+										</option>
+									);
+								})}
+							</select>
+						</label>
+					</div>
+
+					{selectedCoffee &&
+						selectedCoffee.roast_dates &&
+						selectedCoffee.roast_dates.length > 0 && (
+							<div>
+								<label>
+									Roast Date:
+									<select
+										value={newBrew.roastDateId}
+										onChange={(e) =>
+											setNewBrew({
+												...newBrew,
+												roastDateId: e.target.value,
+											})
+										}
+										required
+										disabled={createMutation.isPending}
+									>
+										<option value="">
+											Select Roast Date
+										</option>
+										{[...selectedCoffee.roast_dates]
+											.sort(
+												(a, b) =>
+													Math.abs(
+														new Date() -
+															new Date(a.date)
+													) -
+													Math.abs(
+														new Date() -
+															new Date(b.date)
+													)
+											)
+											.map((roastDate) => {
+												const isClosest =
+													roastDate ===
+													getClosestRoastDate(
+														selectedCoffee.roast_dates
+													);
+												return (
+													<option
+														key={roastDate.id}
+														value={roastDate.id}
+													>
+														{new Date(
+															roastDate.date
+														).toLocaleDateString()}
+														{isClosest
+															? " (Latest)"
+															: ""}
+													</option>
 												);
-											return (
-												<option
-													key={roastDate.id}
-													value={roastDate.id}
-												>
-													{new Date(
-														roastDate.date
-													).toLocaleDateString()}
-													{isClosest
-														? " (Latest)"
-														: ""}
-												</option>
-											);
-										})}
-								</select>
-							</label>
-						</div>
-					)}
+											})}
+									</select>
+								</label>
+							</div>
+						)}
 
-				<div>
-					<label>
-						Date:
-						<input
-							type="datetime-local"
-							value={newBrew.date}
-							onChange={(e) =>
-								setNewBrew({ ...newBrew, date: e.target.value })
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Grinder:
-						<select
-							value={newBrew.grinderId}
-							onChange={(e) =>
-								setNewBrew({
-									...newBrew,
-									grinderId: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						>
-							<option value="">Select Grinder</option>
-							{grinders.map((grinder) => (
-								<option key={grinder.id} value={grinder.id}>
-									{grinder.name}
-								</option>
-							))}
-						</select>
-					</label>
-				</div>
-				<div>
-					<label>
-						Grind Size:
-						<input
-							type="text"
-							value={newBrew.grindSize}
-							onChange={(e) =>
-								setNewBrew({
-									...newBrew,
-									grindSize: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Brewer:
-						<select
-							value={newBrew.brewerId}
-							onChange={(e) =>
-								setNewBrew({
-									...newBrew,
-									brewerId: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						>
-							<option value="">Select Brewer</option>
-							{brewers.map((brewer) => (
-								<option key={brewer.id} value={brewer.id}>
-									{brewer.name}
-								</option>
-							))}
-						</select>
-					</label>
-				</div>
-				<div>
-					<label>
-						Brew Time (seconds):
-						<input
-							type="number"
-							value={newBrew.brewTime}
-							onChange={(e) =>
-								setNewBrew({
-									...newBrew,
-									brewTime: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Dose (g):
-						<input
-							type="number"
-							step="0.1"
-							value={newBrew.dose}
-							onChange={(e) =>
-								setNewBrew({ ...newBrew, dose: e.target.value })
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Yield (g):
-						<input
-							type="number"
-							step="0.1"
-							value={newBrew.yield}
-							onChange={(e) =>
-								setNewBrew({
-									...newBrew,
-									yield: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Notes:
-						<textarea
-							value={newBrew.notes}
-							onChange={(e) =>
-								setNewBrew({
-									...newBrew,
-									notes: e.target.value,
-								})
-							}
-							rows="4"
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<div>
-					<label>
-						Image:
-						<input
-							type="file"
-							accept="image/*"
-							onChange={handleImageChange}
-							disabled={createMutation.isPending}
-						/>
-					</label>
-				</div>
-				<button type="submit" disabled={createMutation.isPending}>
-					{createMutation.isPending
-						? "Logging Brew and Analyzing..."
-						: "Log Brew"}
-				</button>
-			</form>
+					<div>
+						<label>
+							Date:
+							<input
+								type="datetime-local"
+								value={newBrew.date}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										date: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Grinder:
+							<select
+								value={newBrew.grinderId}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										grinderId: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							>
+								<option value="">Select Grinder</option>
+								{grinders.map((grinder) => (
+									<option key={grinder.id} value={grinder.id}>
+										{grinder.name}
+									</option>
+								))}
+							</select>
+						</label>
+					</div>
+					<div>
+						<label>
+							Grind Size:
+							<input
+								type="text"
+								value={newBrew.grindSize}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										grindSize: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Brewer:
+							<select
+								value={newBrew.brewerId}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										brewerId: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							>
+								<option value="">Select Brewer</option>
+								{brewers.map((brewer) => (
+									<option key={brewer.id} value={brewer.id}>
+										{brewer.name}
+									</option>
+								))}
+							</select>
+						</label>
+					</div>
+					<div>
+						<label>
+							Brew Time (seconds):
+							<input
+								type="number"
+								value={newBrew.brewTime}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										brewTime: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Dose (g):
+							<input
+								type="number"
+								step="0.1"
+								value={newBrew.dose}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										dose: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Yield (g):
+							<input
+								type="number"
+								step="0.1"
+								value={newBrew.yield}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										yield: e.target.value,
+									})
+								}
+								required
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Notes:
+							<textarea
+								value={newBrew.notes}
+								onChange={(e) =>
+									setNewBrew({
+										...newBrew,
+										notes: e.target.value,
+									})
+								}
+								rows="4"
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Image:
+							<input
+								type="file"
+								accept="image/*"
+								onChange={handleImageChange}
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+					<button type="submit" disabled={createMutation.isPending}>
+						{createMutation.isPending
+							? "Logging Brew and Analyzing..."
+							: "Log Brew"}
+					</button>
+				</form>
 
-			{createMutation.isPending && (
-				<div>
-					<h3>AI Analysis in Progress</h3>
-					<p>Analyzing your brew data... Please wait.</p>
-				</div>
-			)}
-		</div>
+				{createMutation.isPending && (
+					<div>
+						<h3>AI Analysis in Progress</h3>
+						<p>Analyzing your brew data... Please wait.</p>
+					</div>
+				)}
+			</main>
+		</>
 	);
 }

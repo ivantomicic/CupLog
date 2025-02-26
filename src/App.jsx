@@ -44,20 +44,19 @@ function PrivateRoutes() {
 	return (
 		<>
 			<Navigation />
-			<main className="main-content">
-				<Routes>
-					<Route path="/brewers" element={<Brewers />} />
-					<Route path="/brewers/:id" element={<BrewerDetails />} />
-					<Route path="/grinders" element={<Grinders />} />
-					<Route path="/grinders/:id" element={<GrinderDetails />} />
-					<Route path="/coffee" element={<Coffee />} />
-					<Route path="/coffee/:id" element={<CoffeeDetails />} />
-					<Route path="/brews/new" element={<NewBrew />} />
-					<Route path="/brews/:id" element={<BrewDetails />} />
-					<Route path="/settings" element={<Settings />} />
-					<Route path="/" element={<Home />} />
-				</Routes>
-			</main>
+
+			<Routes>
+				<Route path="/brewers" element={<Brewers />} />
+				<Route path="/brewers/:id" element={<BrewerDetails />} />
+				<Route path="/grinders" element={<Grinders />} />
+				<Route path="/grinders/:id" element={<GrinderDetails />} />
+				<Route path="/coffee" element={<Coffee />} />
+				<Route path="/coffee/:id" element={<CoffeeDetails />} />
+				<Route path="/brews/new" element={<NewBrew />} />
+				<Route path="/brews/:id" element={<BrewDetails />} />
+				<Route path="/settings" element={<Settings />} />
+				<Route path="/" element={<Home />} />
+			</Routes>
 		</>
 	);
 }
