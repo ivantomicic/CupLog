@@ -105,8 +105,12 @@ export default function BrewDetails() {
 				throw new Error("Failed to load brew data");
 			}
 
+			console.log("Sending brew data for analysis:", currentBrew);
+
 			// Get AI analysis
 			const aiSuggestions = await analyzeBrewData(currentBrew);
+
+			console.log("Received AI suggestions:", aiSuggestions);
 
 			// Update the brew with new AI suggestions
 			await updateBrew(id, {
@@ -117,6 +121,7 @@ export default function BrewDetails() {
 			// Reload to get the latest data
 			await loadBrew();
 		} catch (err) {
+			console.error("Error in handleAnalyze:", err);
 			setError(err.message);
 		} finally {
 			setIsAnalyzing(false);
@@ -164,7 +169,6 @@ export default function BrewDetails() {
 	}, [isEditing, brew?.coffee?.name, updateHeader]);
 
 	if (loading) return <Loader />;
-	if (error) return <div>Error: {error}</div>;
 	if (!brew) return <div>Brew not found</div>;
 
 	// Find the selected roast date from coffee's roast dates
@@ -174,6 +178,23 @@ export default function BrewDetails() {
 
 	return (
 		<main className="main-content">
+			{error && (
+				<div
+					className="error-container"
+					style={{
+						padding: "1rem",
+						backgroundColor: "#ffebee",
+						border: "1px solid #f44336",
+						borderRadius: "4px",
+						margin: "1rem 0",
+					}}
+				>
+					<h3>Error</h3>
+					<p>{error}</p>
+					<button onClick={() => setError(null)}>Dismiss</button>
+				</div>
+			)}
+
 			{brew.image_url && (
 				<div>
 					<img

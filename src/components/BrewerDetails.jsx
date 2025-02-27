@@ -44,12 +44,16 @@ export default function BrewerDetails() {
 	if (!brewer) return <div>Brewer not found</div>;
 
 	return (
-		<div>
-			<button onClick={() => navigate("/brewers")}>
-				Back to Brewers
-			</button>
-			<h2>Brewer Details</h2>
-
+		<main className="main-content">
+			{brewer.image_url && (
+				<div>
+					<img
+						src={brewer.image_url}
+						alt="Brew"
+						style={{ maxWidth: "300px" }}
+					/>
+				</div>
+			)}
 			{isEditing ? (
 				<div>
 					<div>
@@ -111,6 +115,6 @@ export default function BrewerDetails() {
 					<button onClick={() => setIsEditing(true)}>Edit</button>
 				</div>
 			)}
-		</div>
+		</main>
 	);
 }

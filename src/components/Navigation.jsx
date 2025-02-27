@@ -1,12 +1,14 @@
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MdHome, MdCoffee, MdBlender, MdLocalCafe } from "react-icons/md";
+import { PiCoffeeBeanFill } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../utils/auth";
 
 const navItems = [
 	{ to: "/", icon: MdHome, label: "Home" },
 	{ to: "/coffee", icon: MdCoffee, label: "Coffee" },
+	{ to: "/roasteries", icon: PiCoffeeBeanFill, label: "Roasteries" },
 	{ to: "/grinders", icon: MdBlender, label: "Grinders" },
 	{ to: "/brewers", icon: MdLocalCafe, label: "Brewers" },
 ];

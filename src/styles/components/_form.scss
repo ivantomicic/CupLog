@@ -1,0 +1,35 @@
+@use "../variables";
+
+form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--spacing-2);
+}
+
+.form-field {
+	display: block;
+	width: 100%;
+
+	label {
+		display: block;
+	}
+
+	&.full-width {
+		grid-column: 1 / -1;
+	}
+
+	input,
+	select,
+	textarea {
+		appearance: none;
+		display: block;
+		width: 100%;
+		padding: var(--spacing-1) var(--spacing-2);
+		border: 1px solid var(--colors-border);
+		border-radius: var(--spacing-1);
+		background-color: white;
+		margin-top: var(--spacing-05);
+		color: var(--colors-text-primary);
+		font-size: 14px;
+	}
+}

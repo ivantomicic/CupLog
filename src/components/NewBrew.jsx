@@ -153,45 +153,40 @@ export default function NewBrew() {
 		<>
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
-					<div>
-						<label>
-							Coffee:
-							<select
-								value={newBrew.coffeeId}
-								onChange={handleCoffeeChange}
-								required
-								disabled={createMutation.isPending}
-							>
-								<option value="">Select Coffee</option>
-								{coffees.map((coffee) => {
-									const closestRoastDate =
-										coffee.roast_dates?.length > 0
-											? getClosestRoastDate(
-													coffee.roast_dates
-											  )
-											: null;
-									return (
-										<option
-											key={coffee.id}
-											value={coffee.id}
-										>
-											{coffee.name} -{" "}
-											{closestRoastDate
-												? `Latest roast: ${new Date(
-														closestRoastDate.date
-												  ).toLocaleDateString()}`
-												: "No roast dates"}
-										</option>
-									);
-								})}
-							</select>
-						</label>
+					<div className="form-field full-width">
+						<label>Coffee:</label>
+						<select
+							value={newBrew.coffeeId}
+							onChange={handleCoffeeChange}
+							required
+							disabled={createMutation.isPending}
+						>
+							<option value="">Select Coffee</option>
+							{coffees.map((coffee) => {
+								const closestRoastDate =
+									coffee.roast_dates?.length > 0
+										? getClosestRoastDate(
+												coffee.roast_dates
+										  )
+										: null;
+								return (
+									<option key={coffee.id} value={coffee.id}>
+										{coffee.name} -{" "}
+										{closestRoastDate
+											? `Latest roast: ${new Date(
+													closestRoastDate.date
+											  ).toLocaleDateString()}`
+											: "No roast dates"}
+									</option>
+								);
+							})}
+						</select>
 					</div>
 
 					{selectedCoffee &&
 						selectedCoffee.roast_dates &&
 						selectedCoffee.roast_dates.length > 0 && (
-							<div>
+							<div className="form-field">
 								<label>
 									Roast Date:
 									<select
@@ -245,156 +240,156 @@ export default function NewBrew() {
 							</div>
 						)}
 
-					<div>
-						<label>
-							Date:
-							<input
-								type="datetime-local"
-								value={newBrew.date}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										date: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
+					<div className="form-field full-width">
+						<label>Date:</label>
+
+						<input
+							type="datetime-local"
+							value={newBrew.date}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									date: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
 					</div>
-					<div>
-						<label>
-							Grinder:
-							<select
-								value={newBrew.grinderId}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										grinderId: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							>
-								<option value="">Select Grinder</option>
-								{grinders.map((grinder) => (
-									<option key={grinder.id} value={grinder.id}>
-										{grinder.name}
-									</option>
-								))}
-							</select>
-						</label>
+
+					<div className="form-field">
+						<label>Grinder:</label>
+						<select
+							value={newBrew.grinderId}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									grinderId: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						>
+							<option value="">Select Grinder</option>
+							{grinders.map((grinder) => (
+								<option key={grinder.id} value={grinder.id}>
+									{grinder.name}
+								</option>
+							))}
+						</select>
 					</div>
-					<div>
-						<label>
-							Grind Size:
-							<input
-								type="text"
-								value={newBrew.grindSize}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										grindSize: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
+
+					<div className="form-field">
+						<label>Grind Size:</label>
+						<input
+							type="number"
+							inputMode="decimal"
+							pattern="[0-9]*"
+							value={newBrew.grindSize}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									grindSize: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
 					</div>
-					<div>
-						<label>
-							Brewer:
-							<select
-								value={newBrew.brewerId}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										brewerId: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							>
-								<option value="">Select Brewer</option>
-								{brewers.map((brewer) => (
-									<option key={brewer.id} value={brewer.id}>
-										{brewer.name}
-									</option>
-								))}
-							</select>
-						</label>
+
+					<div className="form-field">
+						<label>Brewer:</label>
+						<select
+							value={newBrew.brewerId}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									brewerId: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						>
+							<option value="">Select Brewer</option>
+							{brewers.map((brewer) => (
+								<option key={brewer.id} value={brewer.id}>
+									{brewer.name}
+								</option>
+							))}
+						</select>
 					</div>
-					<div>
-						<label>
-							Brew Time (seconds):
-							<input
-								type="number"
-								value={newBrew.brewTime}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										brewTime: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
+
+					<div className="form-field">
+						<label>Brew Time (seconds):</label>
+						<input
+							type="number"
+							pattern="[0-9]*"
+							value={newBrew.brewTime}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									brewTime: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
 					</div>
-					<div>
-						<label>
-							Dose (g):
-							<input
-								type="number"
-								step="0.1"
-								value={newBrew.dose}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										dose: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
+
+					<div className="form-field">
+						<label>Dose (g):</label>
+						<input
+							type="number"
+							inputMode="decimal"
+							pattern="[0-9]*"
+							step="0.1"
+							value={newBrew.dose}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									dose: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
 					</div>
-					<div>
-						<label>
-							Yield (g):
-							<input
-								type="number"
-								step="0.1"
-								value={newBrew.yield}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										yield: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
+
+					<div className="form-field">
+						<label>Yield (g):</label>
+						<input
+							type="number"
+							inputMode="decimal"
+							pattern="[0-9]*"
+							step="0.1"
+							value={newBrew.yield}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									yield: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
 					</div>
-					<div>
-						<label>
-							Notes:
-							<textarea
-								value={newBrew.notes}
-								onChange={(e) =>
-									setNewBrew({
-										...newBrew,
-										notes: e.target.value,
-									})
-								}
-								rows="4"
-								disabled={createMutation.isPending}
-							/>
-						</label>
+
+					<div className="form-field full-width">
+						<label>Notes:</label>
+						<textarea
+							value={newBrew.notes}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									notes: e.target.value,
+								})
+							}
+							rows="4"
+							disabled={createMutation.isPending}
+						/>
 					</div>
-					<div>
+
+					<div className="form-field full-width">
 						<label>
 							Image:
 							<input
@@ -405,11 +400,17 @@ export default function NewBrew() {
 							/>
 						</label>
 					</div>
-					<button type="submit" disabled={createMutation.isPending}>
-						{createMutation.isPending
-							? "Logging Brew and Analyzing..."
-							: "Log Brew"}
-					</button>
+
+					<div className="form-field full-width">
+						<button
+							type="submit"
+							disabled={createMutation.isPending}
+						>
+							{createMutation.isPending
+								? "Logging Brew and Analyzing..."
+								: "Log Brew"}
+						</button>
+					</div>
 				</form>
 				{createMutation.isPending && (
 					<div>

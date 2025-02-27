@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
 	getCoffees,
 	updateCoffee,
 	createRoastDate,
 	deleteRoastDate,
 } from "../utils/supabase-queries";
-import { v4 as uuidv4 } from "uuid";
 import Loader from "./Loader";
+import { usePageHeader } from "../context/PageHeaderContext";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -24,13 +24,13 @@ const getClosestRoastDate = (roastDates) => {
 
 export default function CoffeeDetails() {
 	const { id } = useParams();
-	const navigate = useNavigate();
 	const [coffee, setCoffee] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedCoffee, setEditedCoffee] = useState(null);
 	const [newRoastDate, setNewRoastDate] = useState("");
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const { updateHeader } = usePageHeader();
 
 	useEffect(() => {
 		loadCoffee();
@@ -42,6 +42,15 @@ export default function CoffeeDetails() {
 			const coffee = coffees.find((c) => c.id === id);
 			setCoffee(coffee);
 			setEditedCoffee(coffee);
+
+			// Update the page header with the coffee name
+			if (coffee?.name) {
+				updateHeader({
+					title: `${coffee.name} Coffee`,
+				});
+			} else {
+				updateHeader({ title: "Coffee Details" });
+			}
 		} catch (err) {
 			setError(err.message);
 		} finally {
@@ -49,18 +58,23 @@ export default function CoffeeDetails() {
 		}
 	};
 
+	// Add this effect to update header when editing state changes
+	useEffect(() => {
+		if (coffee?.name) {
+			const title = `${coffee.name} Coffee`;
+			updateHeader({ title });
+		}
+	}, [isEditing, coffee?.name, updateHeader]);
+
 	const handleSave = async () => {
 		try {
-			const updatedCoffee = await updateCoffee(id, {
-				name: editedCoffee.name,
-				country: editedCoffee.country,
-				region: editedCoffee.region,
-				farm: editedCoffee.farm,
-				altitude: editedCoffee.altitude,
-				roast: editedCoffee.roast,
-			});
 			await loadCoffee(); // Reload to get updated data with relationships
 			setIsEditing(false);
+
+			// Update header to remove "Editing" prefix
+			if (editedCoffee.name) {
+				updateHeader({ title: `${editedCoffee.name} Coffee` });
+			}
 		} catch (err) {
 			setError(err.message);
 		}
@@ -97,10 +111,7 @@ export default function CoffeeDetails() {
 	if (!coffee) return <div>Coffee not found</div>;
 
 	return (
-		<div>
-			<button onClick={() => navigate("/coffee")}>Back to Coffee</button>
-			<h2>Coffee Details</h2>
-
+		<main className="main-content">
 			{isEditing ? (
 				<div>
 					<div>
@@ -295,6 +306,6 @@ export default function CoffeeDetails() {
 						})}
 				</ul>
 			</div>
-		</div>
+		</main>
 	);
 }

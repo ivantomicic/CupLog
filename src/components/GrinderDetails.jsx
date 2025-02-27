@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getGrinders, updateGrinder } from "../utils/supabase-queries";
 import Loader from "./Loader";
+import { usePageHeader } from "../context/PageHeaderContext";
 
 export default function GrinderDetails() {
 	const { id } = useParams();
-	const navigate = useNavigate();
 	const [grinder, setGrinder] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedGrinder, setEditedGrinder] = useState(null);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const { updateHeader } = usePageHeader();
 
 	useEffect(() => {
 		loadGrinder();
@@ -22,6 +23,15 @@ export default function GrinderDetails() {
 			const grinder = grinders.find((g) => g.id === id);
 			setGrinder(grinder);
 			setEditedGrinder(grinder);
+
+			// Update the page header with the coffee name
+			if (grinder?.name) {
+				updateHeader({
+					title: grinder.name,
+				});
+			} else {
+				updateHeader({ title: "Grinder Details" });
+			}
 		} catch (err) {
 			setError(err.message);
 		} finally {
@@ -49,12 +59,7 @@ export default function GrinderDetails() {
 	if (!grinder) return <div>Grinder not found</div>;
 
 	return (
-		<div>
-			<button onClick={() => navigate("/grinders")}>
-				Back to Grinders
-			</button>
-			<h2>Grinder Details</h2>
-
+		<main className="main-content">
 			{isEditing ? (
 				<div>
 					<div>
@@ -129,6 +134,6 @@ export default function GrinderDetails() {
 					<button onClick={() => setIsEditing(true)}>Edit</button>
 				</div>
 			)}
-		</div>
+		</main>
 	);
 }

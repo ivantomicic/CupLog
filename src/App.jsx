@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import Brewers from "./components/Brewers";
 import Grinders from "./components/Grinders";
 import Coffee from "./components/Coffee";
+import Roasteries from "./components/Roasteries";
 import BrewDetails from "./components/BrewDetails";
 import CoffeeDetails from "./components/CoffeeDetails";
 import GrinderDetails from "./components/GrinderDetails";
@@ -56,6 +57,7 @@ function PrivateRoutes() {
 				<Route path="/grinders" element={<Grinders />} />
 				<Route path="/grinders/:id" element={<GrinderDetails />} />
 				<Route path="/coffee" element={<Coffee />} />
+				<Route path="/roasteries" element={<Roasteries />} />
 				<Route path="/coffee/:id" element={<CoffeeDetails />} />
 				<Route path="/brews/new" element={<NewBrew />} />
 				<Route path="/brews/:id" element={<BrewDetails />} />

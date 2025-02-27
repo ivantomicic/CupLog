@@ -10,10 +10,15 @@ export function PageHeaderProvider({ children }) {
 	});
 
 	const updateHeader = (newState) => {
-		setHeaderState((prevState) => ({
-			...prevState,
-			...newState,
-		}));
+		setHeaderState((prevState) => {
+			// Check if the new state is actually different from the previous state
+			const hasChanges = Object.keys(newState).some(
+				(key) => prevState[key] !== newState[key]
+			);
+
+			// Only update if there are changes
+			return hasChanges ? { ...prevState, ...newState } : prevState;
+		});
 	};
 
 	return (
