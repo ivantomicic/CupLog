@@ -50,7 +50,7 @@ function CoffeeCard({ brew }) {
 						className="coffee-card-roastery"
 					/>
 
-					<h2 className="coffee-card-name">{brew.coffee?.name}</h2>
+					<h2 className="coffee-card-name">{brew.beans?.name}</h2>
 
 					<div className="coffee-card-flex-info">
 						<p className="coffee-card-brew-type">Espresso</p>

@@ -17,8 +17,8 @@ const getClosestRoastDate = (roastDates) => {
 	if (!roastDates || roastDates.length === 0) return null;
 	const today = new Date();
 	return roastDates.reduce((closest, current) => {
-		const closestDate = new Date(closest.date);
-		const currentDate = new Date(current.date);
+		const closestDate = new Date(closest);
+		const currentDate = new Date(current);
 		const closestDiff = Math.abs(today - closestDate);
 		const currentDiff = Math.abs(today - currentDate);
 		return currentDiff < closestDiff ? current : closest;
@@ -29,7 +29,7 @@ export default function NewBrew() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const [newBrew, setNewBrew] = useState({
-		coffeeId: "",
+		beansId: "",
 		date: new Date().toISOString().slice(0, 16),
 		grinderId: "",
 		grindSize: "",
@@ -40,15 +40,15 @@ export default function NewBrew() {
 		notes: "",
 		image: null,
 		aiSuggestions: null,
-		roastDateId: "",
+		roastDate: "",
 	});
 
 	// Update the page header
 	useUpdatePageHeader("Log New Brew");
 
 	// Queries for all required data
-	const { data: coffees = [], error: coffeesError } = useQuery({
-		queryKey: ["coffees"],
+	const { data: beans = [], error: beansError } = useQuery({
+		queryKey: ["beans"],
 		queryFn: getBeans,
 		staleTime: 30000,
 		cacheTime: 5 * 60 * 1000,
@@ -110,26 +110,26 @@ export default function NewBrew() {
 		}
 	};
 
-	const handleCoffeeChange = (e) => {
-		const coffeeId = e.target.value;
-		const selectedCoffee = coffees.find((c) => c.id === coffeeId);
-		let latestRoastDateId = "";
+	const handleBeansChange = (e) => {
+		const beansId = e.target.value;
+		const selectedBeans = beans.find((b) => b.id === beansId);
+		let selectedRoastDate = "";
 
 		if (
-			selectedCoffee &&
-			selectedCoffee.roast_dates &&
-			selectedCoffee.roast_dates.length > 0
+			selectedBeans &&
+			selectedBeans.roast_dates &&
+			selectedBeans.roast_dates.length > 0
 		) {
 			const closestRoastDate = getClosestRoastDate(
-				selectedCoffee.roast_dates
+				selectedBeans.roast_dates
 			);
-			latestRoastDateId = closestRoastDate.id;
+			selectedRoastDate = closestRoastDate;
 		}
 
 		setNewBrew((prev) => ({
 			...prev,
-			coffeeId,
-			roastDateId: latestRoastDateId,
+			beansId,
+			roastDate: selectedRoastDate,
 		}));
 	};
 
@@ -144,37 +144,35 @@ export default function NewBrew() {
 	};
 
 	// Combine all errors
-	const error = coffeesError || grindersError || brewersError;
+	const error = beansError || grindersError || brewersError;
 	if (error) return <div>Error: {error.message}</div>;
 
-	const selectedCoffee = coffees.find((c) => c.id === newBrew.coffeeId);
+	const selectedBeans = beans.find((b) => b.id === newBrew.beansId);
 
 	return (
 		<>
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
 					<div className="form-field full-width">
-						<label>Coffee:</label>
+						<label>Beans:</label>
 						<select
-							value={newBrew.coffeeId}
-							onChange={handleCoffeeChange}
+							value={newBrew.beansId}
+							onChange={handleBeansChange}
 							required
 							disabled={createMutation.isPending}
 						>
-							<option value="">Select Coffee</option>
-							{coffees.map((coffee) => {
+							<option value="">Select Beans</option>
+							{beans.map((beans) => {
 								const closestRoastDate =
-									coffee.roast_dates?.length > 0
-										? getClosestRoastDate(
-												coffee.roast_dates
-										  )
+									beans.roast_dates?.length > 0
+										? getClosestRoastDate(beans.roast_dates)
 										: null;
 								return (
-									<option key={coffee.id} value={coffee.id}>
-										{coffee.name} -{" "}
+									<option key={beans.id} value={beans.id}>
+										{beans.name} -{" "}
 										{closestRoastDate
 											? `Latest roast: ${new Date(
-													closestRoastDate.date
+													closestRoastDate
 											  ).toLocaleDateString()}`
 											: "No roast dates"}
 									</option>
@@ -183,18 +181,18 @@ export default function NewBrew() {
 						</select>
 					</div>
 
-					{selectedCoffee &&
-						selectedCoffee.roast_dates &&
-						selectedCoffee.roast_dates.length > 0 && (
+					{selectedBeans &&
+						selectedBeans.roast_dates &&
+						selectedBeans.roast_dates.length > 0 && (
 							<div className="form-field">
 								<label>
 									Roast Date:
 									<select
-										value={newBrew.roastDateId}
+										value={newBrew.roastDate}
 										onChange={(e) =>
 											setNewBrew({
 												...newBrew,
-												roastDateId: e.target.value,
+												roastDate: e.target.value,
 											})
 										}
 										required
@@ -203,31 +201,29 @@ export default function NewBrew() {
 										<option value="">
 											Select Roast Date
 										</option>
-										{[...selectedCoffee.roast_dates]
+										{[...selectedBeans.roast_dates]
 											.sort(
 												(a, b) =>
 													Math.abs(
-														new Date() -
-															new Date(a.date)
+														new Date() - new Date(a)
 													) -
 													Math.abs(
-														new Date() -
-															new Date(b.date)
+														new Date() - new Date(b)
 													)
 											)
 											.map((roastDate) => {
 												const isClosest =
 													roastDate ===
 													getClosestRoastDate(
-														selectedCoffee.roast_dates
+														selectedBeans.roast_dates
 													);
 												return (
 													<option
-														key={roastDate.id}
-														value={roastDate.id}
+														key={roastDate}
+														value={roastDate}
 													>
 														{new Date(
-															roastDate.date
+															roastDate
 														).toLocaleDateString()}
 														{isClosest
 															? " (Latest)"

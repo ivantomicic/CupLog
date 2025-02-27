@@ -17,8 +17,8 @@ const getClosestRoastDate = (roastDates) => {
 	if (!roastDates || roastDates.length === 0) return null;
 	const today = new Date();
 	return roastDates.reduce((closest, current) => {
-		const closestDate = new Date(closest.date);
-		const currentDate = new Date(current.date);
+		const closestDate = new Date(closest);
+		const currentDate = new Date(current);
 		const closestDiff = Math.abs(today - closestDate);
 		const currentDiff = Math.abs(today - currentDate);
 		return currentDiff < closestDiff ? current : closest;
@@ -39,7 +39,7 @@ export default function Brews() {
 		notes: "",
 		image: null,
 		aiSuggestions: null,
-		roastDateId: "",
+		roastDate: "",
 	});
 
 	// Queries for all required data
@@ -122,7 +122,7 @@ export default function Brews() {
 	const handleCoffeeChange = (e) => {
 		const coffeeId = e.target.value;
 		const selectedCoffee = coffees.find((c) => c.id === coffeeId);
-		let latestRoastDateId = "";
+		let selectedRoastDate = "";
 
 		if (
 			selectedCoffee &&
@@ -132,13 +132,13 @@ export default function Brews() {
 			const closestRoastDate = getClosestRoastDate(
 				selectedCoffee.roast_dates
 			);
-			latestRoastDateId = closestRoastDate.id;
+			selectedRoastDate = closestRoastDate;
 		}
 
 		setNewBrew((prev) => ({
 			...prev,
 			coffeeId,
-			roastDateId: latestRoastDateId,
+			roastDate: selectedRoastDate,
 		}));
 	};
 
@@ -159,7 +159,7 @@ export default function Brews() {
 				notes: "",
 				image: null,
 				aiSuggestions: null,
-				roastDateId: "",
+				roastDate: "",
 			});
 		} catch (err) {
 			console.error("Failed to create brew:", err);
@@ -199,7 +199,7 @@ export default function Brews() {
 										{coffee.name} -{" "}
 										{closestRoastDate
 											? `Latest roast: ${new Date(
-													closestRoastDate.date
+													closestRoastDate
 											  ).toLocaleDateString()}`
 											: "No roast dates"}
 									</option>
@@ -216,11 +216,11 @@ export default function Brews() {
 							<label>
 								Roast Date:
 								<select
-									value={newBrew.roastDateId}
+									value={newBrew.roastDate}
 									onChange={(e) =>
 										setNewBrew({
 											...newBrew,
-											roastDateId: e.target.value,
+											roastDate: e.target.value,
 										})
 									}
 									required
@@ -231,12 +231,10 @@ export default function Brews() {
 										.sort(
 											(a, b) =>
 												Math.abs(
-													new Date() -
-														new Date(a.date)
+													new Date() - new Date(a)
 												) -
 												Math.abs(
-													new Date() -
-														new Date(b.date)
+													new Date() - new Date(b)
 												)
 										)
 										.map((roastDate) => {
@@ -247,11 +245,11 @@ export default function Brews() {
 												);
 											return (
 												<option
-													key={roastDate.id}
-													value={roastDate.id}
+													key={roastDate}
+													value={roastDate}
 												>
 													{new Date(
-														roastDate.date
+														roastDate
 													).toLocaleDateString()}
 													{isClosest
 														? " (Latest)"

@@ -5,4 +5,3 @@ export * from "./supabase/brewers";
 export * from "./supabase/beans";
 export * from "./supabase/grinders";
 export * from "./supabase/roasteries";
-export * from "./supabase/roastDates";

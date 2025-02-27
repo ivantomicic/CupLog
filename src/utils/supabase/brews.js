@@ -8,7 +8,7 @@ export const getBrews = async () => {
 		.select(
 			`
       *,
-      bean:beans(*,roast_dates(*)),
+      beans:beans(*,roast_dates),
       grinder:grinders(*),
       brewer:brewers(*)
     `
@@ -29,13 +29,16 @@ export const createBrew = async (brew) => {
 		imageUrl = await uploadImage(brew.image, "brew-images");
 	}
 
+	// Use the latest roast date from the roast_dates array
+	const latestRoastDate = brew.roastDates?.[0] || null;
+
 	const { data, error } = await supabase
 		.from("brews")
 		.insert([
 			{
 				user_id: userId,
 				beans_id: brew.beansId,
-				roast_date_id: brew.roastDateId,
+				roast_date: latestRoastDate,
 				grinder_id: brew.grinderId,
 				brewer_id: brew.brewerId,
 				date: brew.date,
@@ -116,11 +119,14 @@ export const updateBrew = async (id, updates) => {
 		flowChartUrl = await uploadImage(updates.flow_chart, "flow-charts");
 	}
 
+	// Use the latest roast date from the roast_dates array
+	const latestRoastDate = brewUpdates.roastDates?.[0] || null;
+
 	const { data, error } = await supabase
 		.from("brews")
 		.update({
 			bean_id: brewUpdates.bean_id,
-			roast_date_id: brewUpdates.roast_date_id,
+			roast_date: latestRoastDate,
 			grinder_id: brewUpdates.grinder_id,
 			brewer_id: brewUpdates.brewer_id,
 			date: brewUpdates.date,

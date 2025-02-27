@@ -50,9 +50,9 @@ export default function BrewDetails() {
 				setBrew(brew);
 
 				// Update the page header with the bean name
-				if (brew.bean?.name) {
+				if (brew.beans?.name) {
 					updateHeader({
-						title: `${brew.bean.name} Brew`,
+						title: `${brew.beans.name} Brew`,
 					});
 				} else {
 					updateHeader({ title: "Brew Details" });
@@ -60,7 +60,7 @@ export default function BrewDetails() {
 
 				setEditedBrew({
 					...brew,
-					bean_id: brew.bean?.id,
+					beans_id: brew.beans?.id,
 					grinder_id: brew.grinder?.id,
 					brewer_id: brew.brewer?.id,
 					roast_date_id: brew.roast_date_id,
@@ -90,8 +90,8 @@ export default function BrewDetails() {
 			setIsEditing(false);
 
 			// Update header to remove "Editing" prefix
-			if (brew.bean?.name) {
-				updateHeader({ title: `${brew.bean.name} Brew` });
+			if (brew.beans?.name) {
+				updateHeader({ title: `${brew.beans.name} Brew` });
 			}
 		} catch (err) {
 			setError(err.message);
@@ -166,22 +166,20 @@ export default function BrewDetails() {
 
 	// Update header when editing state changes
 	useEffect(() => {
-		if (brew?.bean?.name) {
+		if (brew?.beans?.name) {
 			const title = isEditing
-				? `Editing: ${brew.bean.name} Brew`
-				: `${brew.bean.name} Brew`;
+				? `Editing: ${brew.beans.name} Brew`
+				: `${brew.beans.name} Brew`;
 			updateHeader({ title });
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isEditing, brew?.bean?.name]);
+	}, [isEditing, brew?.beans?.name]);
 
 	if (loading) return <Loader />;
 	if (!brew) return <div>Brew not found</div>;
 
 	// Find the selected roast date from bean's roast dates
-	const selectedRoastDate = brew.bean?.roast_dates?.find(
-		(rd) => rd.id === brew.roast_date_id
-	);
+	const selectedRoastDate = brew.roast_date;
 
 	return (
 		<main className="main-content">
@@ -216,45 +214,50 @@ export default function BrewDetails() {
 				<div>
 					<div>
 						<label>
-							Bean:
+							Beans:
 							<select
-								value={editedBrew.bean_id}
+								value={editedBrew.beans_id}
 								onChange={(e) =>
 									setEditedBrew({
 										...editedBrew,
-										bean_id: e.target.value,
+										beans_id: e.target.value,
 									})
 								}
 								disabled
 							>
-								<option value={brew.bean?.id}>
-									{brew.bean?.name}
+								<option value={brew.beans?.id}>
+									{brew.beans?.name}
 								</option>
 							</select>
 						</label>
 					</div>
 
-					{brew.bean?.roast_dates &&
-						brew.bean.roast_dates.length > 0 && (
+					{brew.beans?.roast_dates &&
+						brew.beans.roast_dates.length > 0 && (
 							<div>
 								<label>
 									Roast Date:
 									<select
-										value={editedBrew.roast_date_id}
+										value={editedBrew.roast_date}
 										onChange={(e) =>
 											setEditedBrew({
 												...editedBrew,
-												roast_date_id: e.target.value,
+												roast_date: e.target.value,
 											})
 										}
 									>
-										{brew.bean.roast_dates.map((rd) => (
-											<option key={rd.id} value={rd.id}>
-												{new Date(
-													rd.date
-												).toLocaleDateString()}
-											</option>
-										))}
+										{brew.beans.roast_dates.map(
+											(roastDate) => (
+												<option
+													key={roastDate}
+													value={roastDate}
+												>
+													{new Date(
+														roastDate
+													).toLocaleDateString()}
+												</option>
+											)
+										)}
 									</select>
 								</label>
 							</div>
@@ -436,15 +439,13 @@ export default function BrewDetails() {
 			) : (
 				<div>
 					<p>Date: {new Date(brew.date).toLocaleString()}</p>
-					<p>Bean: {brew.bean?.name}</p>
-					<p>
-						Roast Date:{" "}
-						{selectedRoastDate
-							? new Date(
-									selectedRoastDate.date
-							  ).toLocaleDateString()
-							: "Unknown"}
-					</p>
+					<p>Beans: {brew.beans?.name}</p>
+					{selectedRoastDate && (
+						<p>
+							Roast Date:{" "}
+							{new Date(selectedRoastDate).toLocaleDateString()}
+						</p>
+					)}
 					<p>Grinder: {brew.grinder?.name}</p>
 					<p>Grind Size: {brew.grind_size}</p>
 					<p>Brewer: {brew.brewer?.name}</p>

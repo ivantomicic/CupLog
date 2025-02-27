@@ -32,31 +32,39 @@ function Home() {
 		},
 	});
 
+	console.log(brews);
+
 	if (brewsError) return <div>Error: {brewsError.message}</div>;
 	if (isLoadingBrews) return <Loader />;
 
 	return (
 		<>
 			<main className="main-content">
-				<ul className="coffee-cards">
-					{brews.map((brew) => (
-						<CoffeeCard
-							key={brew.id}
-							brew={brew}
-							onDelete={async (brewId) => {
-								try {
-									await deleteMutation.mutateAsync(brewId);
-								} catch (err) {
-									console.error(
-										"Failed to delete brew:",
-										err
-									);
-								}
-							}}
-							isDeleting={deleteMutation.isPending}
-						/>
-					))}
-				</ul>
+				{brews.length === 0 ? (
+					<div>No coffee logs available.</div>
+				) : (
+					<ul className="coffee-cards">
+						{brews.map((brew) => (
+							<CoffeeCard
+								key={brew.id}
+								brew={brew}
+								onDelete={async (brewId) => {
+									try {
+										await deleteMutation.mutateAsync(
+											brewId
+										);
+									} catch (err) {
+										console.error(
+											"Failed to delete brew:",
+											err
+										);
+									}
+								}}
+								isDeleting={deleteMutation.isPending}
+							/>
+						))}
+					</ul>
+				)}
 			</main>
 		</>
 	);

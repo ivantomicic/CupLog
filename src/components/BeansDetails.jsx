@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import {
 	getBeans,
 	updateBean,
-	createRoastDate,
-	deleteRoastDate,
+	addRoastDate,
+	removeRoastDate,
 } from "../utils/supabase";
 import Loader from "./Loader";
 import { usePageHeader } from "../context/PageHeaderContext";
@@ -14,8 +14,8 @@ const getClosestRoastDate = (roastDates) => {
 	if (!roastDates || roastDates.length === 0) return null;
 	const today = new Date();
 	return roastDates.reduce((closest, current) => {
-		const closestDate = new Date(closest.date);
-		const currentDate = new Date(current.date);
+		const closestDate = new Date(closest);
+		const currentDate = new Date(current);
 		const closestDiff = Math.abs(today - closestDate);
 		const currentDiff = Math.abs(today - currentDate);
 		return currentDiff < closestDiff ? current : closest;
@@ -75,6 +75,8 @@ export default function BeansDetails() {
 				farm: editedBean.farm,
 				altitude: editedBean.altitude,
 				roast: editedBean.roast,
+				// Keep the existing roast_dates
+				roast_dates: bean.roast_dates || [],
 			});
 			await loadBean(); // Reload to get updated data with relationships
 			setIsEditing(false);
@@ -92,10 +94,7 @@ export default function BeansDetails() {
 		if (!newRoastDate || !isEditing) return;
 
 		try {
-			await createRoastDate({
-				bean_id: id,
-				date: newRoastDate,
-			});
+			await addRoastDate(id, newRoastDate);
 			setNewRoastDate("");
 			await loadBean(); // Reload to get updated data
 		} catch (err) {
@@ -103,11 +102,11 @@ export default function BeansDetails() {
 		}
 	};
 
-	const handleDeleteRoastDate = async (roastDateId) => {
+	const handleDeleteRoastDate = async (dateToRemove) => {
 		if (!isEditing) return;
 
 		try {
-			await deleteRoastDate(roastDateId);
+			await removeRoastDate(id, dateToRemove);
 			await loadBean(); // Reload to get updated data
 		} catch (err) {
 			setError(err.message);
@@ -252,8 +251,8 @@ export default function BeansDetails() {
 					{(bean.roast_dates || [])
 						.sort(
 							(a, b) =>
-								Math.abs(new Date() - new Date(a.date)) -
-								Math.abs(new Date() - new Date(b.date))
+								Math.abs(new Date() - new Date(a)) -
+								Math.abs(new Date() - new Date(b))
 						)
 						.map((roastDate) => {
 							const isClosest =
@@ -261,7 +260,7 @@ export default function BeansDetails() {
 								getClosestRoastDate(bean.roast_dates);
 							return (
 								<li
-									key={roastDate.id}
+									key={roastDate}
 									style={{
 										display: "flex",
 										alignItems: "center",
@@ -276,7 +275,7 @@ export default function BeansDetails() {
 								>
 									<span>
 										{new Date(
-											roastDate.date
+											roastDate
 										).toLocaleDateString()}
 										{isClosest && (
 											<span
@@ -292,9 +291,7 @@ export default function BeansDetails() {
 									{isEditing && (
 										<button
 											onClick={() =>
-												handleDeleteRoastDate(
-													roastDate.id
-												)
+												handleDeleteRoastDate(roastDate)
 											}
 											style={{
 												marginLeft: "auto",
