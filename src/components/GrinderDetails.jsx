@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getGrinders, updateGrinder } from "../utils/supabase-queries";
+import { getGrinders, updateGrinder } from "../utils/supabase";
 import Loader from "./Loader";
 import { usePageHeader } from "../context/PageHeaderContext";
 

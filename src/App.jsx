@@ -2,10 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Brewers from "./components/Brewers";
 import Grinders from "./components/Grinders";
-import Coffee from "./components/Coffee";
+import Beans from "./components/Beans";
 import Roasteries from "./components/Roasteries";
 import BrewDetails from "./components/BrewDetails";
-import CoffeeDetails from "./components/CoffeeDetails";
+import BeansDetails from "./components/BeansDetails";
 import GrinderDetails from "./components/GrinderDetails";
 import BrewerDetails from "./components/BrewerDetails";
 import Login from "./components/Login";
@@ -56,9 +56,9 @@ function PrivateRoutes() {
 				<Route path="/brewers/:id" element={<BrewerDetails />} />
 				<Route path="/grinders" element={<Grinders />} />
 				<Route path="/grinders/:id" element={<GrinderDetails />} />
-				<Route path="/coffee" element={<Coffee />} />
+				<Route path="/beans" element={<Beans />} />
 				<Route path="/roasteries" element={<Roasteries />} />
-				<Route path="/coffee/:id" element={<CoffeeDetails />} />
+				<Route path="/beans/:id" element={<BeansDetails />} />
 				<Route path="/brews/new" element={<NewBrew />} />
 				<Route path="/brews/:id" element={<BrewDetails />} />
 				<Route path="/settings" element={<Settings />} />

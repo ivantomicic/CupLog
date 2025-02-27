@@ -5,8 +5,8 @@ import {
 	getRoasteries,
 	createRoastery,
 	deleteRoastery,
-} from "../utils/supabase-queries";
-import { getCurrentUser } from "../utils/supabase";
+	getCurrentUser,
+} from "../utils/supabase";
 import Loader from "./Loader";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 

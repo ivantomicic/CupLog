@@ -4,11 +4,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "./Loader";
 import PropTypes from "prop-types";
 import {
-	getCoffees,
-	createCoffee,
-	deleteCoffee,
+	getBeans,
+	createBean,
+	deleteBean,
 	createRoastDate,
-} from "../utils/supabase-queries";
+} from "../utils/supabase";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 // Helper function to get the closest roast date to today
@@ -24,9 +24,9 @@ const getClosestRoastDate = (roastDates) => {
 	});
 };
 
-function AddCoffeeModal({ isOpen, onClose }) {
+function AddBeanModal({ isOpen, onClose }) {
 	const queryClient = useQueryClient();
-	const [newCoffee, setNewCoffee] = useState({
+	const [newBean, setNewBean] = useState({
 		name: "",
 		country: "",
 		region: "",
@@ -36,20 +36,20 @@ function AddCoffeeModal({ isOpen, onClose }) {
 	});
 	const [newRoastDate, setNewRoastDate] = useState("");
 
-	// Mutation for creating coffee
+	// Mutation for creating bean
 	const createMutation = useMutation({
-		mutationFn: async (coffeeData) => {
-			const coffee = await createCoffee(coffeeData);
+		mutationFn: async (beanData) => {
+			const bean = await createBean(beanData);
 			if (newRoastDate) {
 				await createRoastDate({
-					coffee_id: coffee.id,
+					bean_id: bean.id,
 					date: newRoastDate,
 				});
 			}
-			return coffee;
+			return bean;
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries(["coffees"]);
+			queryClient.invalidateQueries(["beans"]);
 			onClose();
 		},
 	});
@@ -59,16 +59,16 @@ function AddCoffeeModal({ isOpen, onClose }) {
 
 		try {
 			await createMutation.mutateAsync({
-				name: newCoffee.name,
-				country: newCoffee.country,
-				region: newCoffee.region,
-				farm: newCoffee.farm,
-				altitude: newCoffee.altitude,
-				roast: newCoffee.roast,
+				name: newBean.name,
+				country: newBean.country,
+				region: newBean.region,
+				farm: newBean.farm,
+				altitude: newBean.altitude,
+				roast: newBean.roast,
 			});
 
 			// Reset form
-			setNewCoffee({
+			setNewBean({
 				name: "",
 				country: "",
 				region: "",
@@ -78,7 +78,7 @@ function AddCoffeeModal({ isOpen, onClose }) {
 			});
 			setNewRoastDate("");
 		} catch (err) {
-			console.error("Failed to create coffee:", err);
+			console.error("Failed to create bean:", err);
 		}
 	};
 
@@ -87,17 +87,17 @@ function AddCoffeeModal({ isOpen, onClose }) {
 	return (
 		<div className="modal-overlay" onClick={onClose}>
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
-				<h2>Add New Coffee</h2>
+				<h2>Add New Bean</h2>
 				<form onSubmit={handleSubmit}>
 					<div>
 						<label>
 							Name:
 							<input
 								type="text"
-								value={newCoffee.name}
+								value={newBean.name}
 								onChange={(e) =>
-									setNewCoffee({
-										...newCoffee,
+									setNewBean({
+										...newBean,
 										name: e.target.value,
 									})
 								}
@@ -111,10 +111,10 @@ function AddCoffeeModal({ isOpen, onClose }) {
 							Country:
 							<input
 								type="text"
-								value={newCoffee.country}
+								value={newBean.country}
 								onChange={(e) =>
-									setNewCoffee({
-										...newCoffee,
+									setNewBean({
+										...newBean,
 										country: e.target.value,
 									})
 								}
@@ -128,10 +128,10 @@ function AddCoffeeModal({ isOpen, onClose }) {
 							Region:
 							<input
 								type="text"
-								value={newCoffee.region}
+								value={newBean.region}
 								onChange={(e) =>
-									setNewCoffee({
-										...newCoffee,
+									setNewBean({
+										...newBean,
 										region: e.target.value,
 									})
 								}
@@ -145,10 +145,10 @@ function AddCoffeeModal({ isOpen, onClose }) {
 							Farm:
 							<input
 								type="text"
-								value={newCoffee.farm}
+								value={newBean.farm}
 								onChange={(e) =>
-									setNewCoffee({
-										...newCoffee,
+									setNewBean({
+										...newBean,
 										farm: e.target.value,
 									})
 								}
@@ -162,10 +162,10 @@ function AddCoffeeModal({ isOpen, onClose }) {
 							Altitude:
 							<input
 								type="text"
-								value={newCoffee.altitude}
+								value={newBean.altitude}
 								onChange={(e) =>
-									setNewCoffee({
-										...newCoffee,
+									setNewBean({
+										...newBean,
 										altitude: e.target.value,
 									})
 								}
@@ -178,10 +178,10 @@ function AddCoffeeModal({ isOpen, onClose }) {
 						<label>
 							Roast:
 							<select
-								value={newCoffee.roast}
+								value={newBean.roast}
 								onChange={(e) =>
-									setNewCoffee({
-										...newCoffee,
+									setNewBean({
+										...newBean,
 										roast: e.target.value,
 									})
 								}
@@ -216,7 +216,7 @@ function AddCoffeeModal({ isOpen, onClose }) {
 						>
 							{createMutation.isPending
 								? "Adding..."
-								: "Add Coffee"}
+								: "Add Bean"}
 						</button>
 					</div>
 				</form>
@@ -225,52 +225,52 @@ function AddCoffeeModal({ isOpen, onClose }) {
 	);
 }
 
-AddCoffeeModal.propTypes = {
+AddBeanModal.propTypes = {
 	isOpen: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
 };
 
-export default function Coffee() {
+export default function Beans() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const queryClient = useQueryClient();
 
 	// Update the page header
-	useUpdatePageHeader("Coffee");
+	useUpdatePageHeader("Beans");
 
-	// Query for fetching coffees with caching
+	// Query for fetching beans with caching
 	const {
-		data: coffees = [],
+		data: beans = [],
 		error,
 		isInitialLoading,
 	} = useQuery({
-		queryKey: ["coffees"],
-		queryFn: getCoffees,
+		queryKey: ["beans"],
+		queryFn: getBeans,
 		staleTime: 30000,
 		cacheTime: 5 * 60 * 1000,
 	});
 
-	// Mutation for deleting coffee
+	// Mutation for deleting bean
 	const deleteMutation = useMutation({
-		mutationFn: deleteCoffee,
-		onSuccess: (_, coffeeId) => {
-			queryClient.setQueryData(["coffees"], (old) =>
-				old?.filter((coffee) => coffee.id !== coffeeId)
+		mutationFn: deleteBean,
+		onSuccess: (_, beanId) => {
+			queryClient.setQueryData(["beans"], (old) =>
+				old?.filter((bean) => bean.id !== beanId)
 			);
 		},
 	});
 
-	const handleDelete = async (e, coffeeId) => {
+	const handleDelete = async (e, beanId) => {
 		e.preventDefault();
 		e.stopPropagation();
 
 		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this coffee? This will affect any brew logs using this coffee."
+			"Are you sure you want to delete this bean? This will affect any brew logs using this bean."
 		);
 		if (confirmDelete) {
 			try {
-				await deleteMutation.mutateAsync(coffeeId);
+				await deleteMutation.mutateAsync(beanId);
 			} catch (err) {
-				console.error("Failed to delete coffee:", err);
+				console.error("Failed to delete bean:", err);
 			}
 		}
 	};
@@ -285,26 +285,26 @@ export default function Coffee() {
 					className="add-button"
 					onClick={() => setIsModalOpen(true)}
 				>
-					Add Coffee
+					Add Bean
 				</button>
 
-				<div className="coffee-list">
-					{coffees.map((coffee) => {
+				<div className="bean-list">
+					{beans.map((bean) => {
 						const closestRoastDate = getClosestRoastDate(
-							coffee.roast_dates
+							bean.roast_dates
 						);
 						return (
-							<div key={coffee.id} className="coffee-item">
+							<div key={bean.id} className="bean-item">
 								<Link
-									to={`/coffee/${coffee.id}`}
-									className="coffee-details"
+									to={`/beans/${bean.id}`}
+									className="bean-details"
 								>
-									<h3>{coffee.name}</h3>
+									<h3>{bean.name}</h3>
 									<p>
-										{coffee.country}, {coffee.region}
+										{bean.country}, {bean.region}
 									</p>
 									<p className="roast-type">
-										{coffee.roast} roast
+										{bean.roast} roast
 									</p>
 									{closestRoastDate && (
 										<p className="roast-date">
@@ -316,7 +316,7 @@ export default function Coffee() {
 									)}
 								</Link>
 								<button
-									onClick={(e) => handleDelete(e, coffee.id)}
+									onClick={(e) => handleDelete(e, bean.id)}
 									disabled={deleteMutation.isPending}
 									className="delete-button"
 								>
@@ -329,7 +329,7 @@ export default function Coffee() {
 					})}
 				</div>
 
-				<AddCoffeeModal
+				<AddBeanModal
 					isOpen={isModalOpen}
 					onClose={() => setIsModalOpen(false)}
 				/>

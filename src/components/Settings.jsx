@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../utils/supabase";
 import { resetPassword } from "../utils/auth";
-import { updateUserProfile } from "../utils/supabase-queries";
+import { supabase, updateUserProfile } from "../utils/supabase";
 import Loader from "./Loader";
 
 export default function Settings() {

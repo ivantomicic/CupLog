@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
-	getCoffees,
-	updateCoffee,
+	getBeans,
+	updateBean,
 	createRoastDate,
 	deleteRoastDate,
-} from "../utils/supabase-queries";
+} from "../utils/supabase";
 import Loader from "./Loader";
 import { usePageHeader } from "../context/PageHeaderContext";
 
@@ -22,34 +22,34 @@ const getClosestRoastDate = (roastDates) => {
 	});
 };
 
-export default function CoffeeDetails() {
+export default function BeansDetails() {
 	const { id } = useParams();
-	const [coffee, setCoffee] = useState(null);
+	const [bean, setBean] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
-	const [editedCoffee, setEditedCoffee] = useState(null);
+	const [editedBean, setEditedBean] = useState(null);
 	const [newRoastDate, setNewRoastDate] = useState("");
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const { updateHeader } = usePageHeader();
 
 	useEffect(() => {
-		loadCoffee();
+		loadBean();
 	}, [id]);
 
-	const loadCoffee = async () => {
+	const loadBean = async () => {
 		try {
-			const coffees = await getCoffees();
-			const coffee = coffees.find((c) => c.id === id);
-			setCoffee(coffee);
-			setEditedCoffee(coffee);
+			const beans = await getBeans();
+			const bean = beans.find((c) => c.id === id);
+			setBean(bean);
+			setEditedBean(bean);
 
-			// Update the page header with the coffee name
-			if (coffee?.name) {
+			// Update the page header with the bean name
+			if (bean?.name) {
 				updateHeader({
-					title: `${coffee.name} Coffee`,
+					title: `${bean.name} Bean`,
 				});
 			} else {
-				updateHeader({ title: "Coffee Details" });
+				updateHeader({ title: "Bean Details" });
 			}
 		} catch (err) {
 			setError(err.message);
@@ -60,20 +60,28 @@ export default function CoffeeDetails() {
 
 	// Add this effect to update header when editing state changes
 	useEffect(() => {
-		if (coffee?.name) {
-			const title = `${coffee.name} Coffee`;
+		if (bean?.name) {
+			const title = `${bean.name} Bean`;
 			updateHeader({ title });
 		}
-	}, [isEditing, coffee?.name, updateHeader]);
+	}, [isEditing, bean?.name, updateHeader]);
 
 	const handleSave = async () => {
 		try {
-			await loadCoffee(); // Reload to get updated data with relationships
+			await updateBean(id, {
+				name: editedBean.name,
+				country: editedBean.country,
+				region: editedBean.region,
+				farm: editedBean.farm,
+				altitude: editedBean.altitude,
+				roast: editedBean.roast,
+			});
+			await loadBean(); // Reload to get updated data with relationships
 			setIsEditing(false);
 
 			// Update header to remove "Editing" prefix
-			if (editedCoffee.name) {
-				updateHeader({ title: `${editedCoffee.name} Coffee` });
+			if (editedBean.name) {
+				updateHeader({ title: `${editedBean.name} Bean` });
 			}
 		} catch (err) {
 			setError(err.message);
@@ -85,11 +93,11 @@ export default function CoffeeDetails() {
 
 		try {
 			await createRoastDate({
-				coffee_id: id,
+				bean_id: id,
 				date: newRoastDate,
 			});
 			setNewRoastDate("");
-			await loadCoffee(); // Reload to get updated data
+			await loadBean(); // Reload to get updated data
 		} catch (err) {
 			setError(err.message);
 		}
@@ -100,7 +108,7 @@ export default function CoffeeDetails() {
 
 		try {
 			await deleteRoastDate(roastDateId);
-			await loadCoffee(); // Reload to get updated data
+			await loadBean(); // Reload to get updated data
 		} catch (err) {
 			setError(err.message);
 		}
@@ -108,7 +116,7 @@ export default function CoffeeDetails() {
 
 	if (loading) return <Loader />;
 	if (error) return <div>Error: {error}</div>;
-	if (!coffee) return <div>Coffee not found</div>;
+	if (!bean) return <div>Bean not found</div>;
 
 	return (
 		<main className="main-content">
@@ -119,10 +127,10 @@ export default function CoffeeDetails() {
 							Name:
 							<input
 								type="text"
-								value={editedCoffee.name}
+								value={editedBean.name}
 								onChange={(e) =>
-									setEditedCoffee({
-										...editedCoffee,
+									setEditedBean({
+										...editedBean,
 										name: e.target.value,
 									})
 								}
@@ -134,10 +142,10 @@ export default function CoffeeDetails() {
 							Country:
 							<input
 								type="text"
-								value={editedCoffee.country}
+								value={editedBean.country}
 								onChange={(e) =>
-									setEditedCoffee({
-										...editedCoffee,
+									setEditedBean({
+										...editedBean,
 										country: e.target.value,
 									})
 								}
@@ -149,10 +157,10 @@ export default function CoffeeDetails() {
 							Region:
 							<input
 								type="text"
-								value={editedCoffee.region}
+								value={editedBean.region}
 								onChange={(e) =>
-									setEditedCoffee({
-										...editedCoffee,
+									setEditedBean({
+										...editedBean,
 										region: e.target.value,
 									})
 								}
@@ -164,10 +172,10 @@ export default function CoffeeDetails() {
 							Farm:
 							<input
 								type="text"
-								value={editedCoffee.farm}
+								value={editedBean.farm}
 								onChange={(e) =>
-									setEditedCoffee({
-										...editedCoffee,
+									setEditedBean({
+										...editedBean,
 										farm: e.target.value,
 									})
 								}
@@ -179,10 +187,10 @@ export default function CoffeeDetails() {
 							Altitude:
 							<input
 								type="text"
-								value={editedCoffee.altitude}
+								value={editedBean.altitude}
 								onChange={(e) =>
-									setEditedCoffee({
-										...editedCoffee,
+									setEditedBean({
+										...editedBean,
 										altitude: e.target.value,
 									})
 								}
@@ -193,10 +201,10 @@ export default function CoffeeDetails() {
 						<label>
 							Roast:
 							<select
-								value={editedCoffee.roast}
+								value={editedBean.roast}
 								onChange={(e) =>
-									setEditedCoffee({
-										...editedCoffee,
+									setEditedBean({
+										...editedBean,
 										roast: e.target.value,
 									})
 								}
@@ -212,12 +220,12 @@ export default function CoffeeDetails() {
 				</div>
 			) : (
 				<div>
-					<p>Name: {coffee.name}</p>
-					<p>Country: {coffee.country}</p>
-					<p>Region: {coffee.region}</p>
-					<p>Farm: {coffee.farm}</p>
-					<p>Altitude: {coffee.altitude}</p>
-					<p>Roast: {coffee.roast}</p>
+					<p>Name: {bean.name}</p>
+					<p>Country: {bean.country}</p>
+					<p>Region: {bean.region}</p>
+					<p>Farm: {bean.farm}</p>
+					<p>Altitude: {bean.altitude}</p>
+					<p>Roast: {bean.roast}</p>
 					<button onClick={() => setIsEditing(true)}>Edit</button>
 				</div>
 			)}
@@ -241,7 +249,7 @@ export default function CoffeeDetails() {
 				)}
 
 				<ul style={{ listStyle: "none", padding: 0 }}>
-					{(coffee.roast_dates || [])
+					{(bean.roast_dates || [])
 						.sort(
 							(a, b) =>
 								Math.abs(new Date() - new Date(a.date)) -
@@ -250,7 +258,7 @@ export default function CoffeeDetails() {
 						.map((roastDate) => {
 							const isClosest =
 								roastDate ===
-								getClosestRoastDate(coffee.roast_dates);
+								getClosestRoastDate(bean.roast_dates);
 							return (
 								<li
 									key={roastDate.id}

@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	createBrew,
-	getCoffees,
+	getBeans,
 	getGrinders,
 	getBrewers,
 	updateBrew,
 	getBrews,
-} from "../utils/supabase-queries";
+} from "../utils/supabase";
 import { analyzeBrewData } from "../utils/openai";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
@@ -49,7 +49,7 @@ export default function NewBrew() {
 	// Queries for all required data
 	const { data: coffees = [], error: coffeesError } = useQuery({
 		queryKey: ["coffees"],
-		queryFn: getCoffees,
+		queryFn: getBeans,
 		staleTime: 30000,
 		cacheTime: 5 * 60 * 1000,
 	});

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getBrewers, updateBrewer } from "../utils/supabase-queries";
+import { getBrewers, updateBrewer } from "../utils/supabase";
 import Loader from "./Loader";
 
 export default function BrewerDetails() {

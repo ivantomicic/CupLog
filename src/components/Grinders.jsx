@@ -2,11 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "./Loader";
-import {
-	getGrinders,
-	createGrinder,
-	deleteGrinder,
-} from "../utils/supabase-queries";
+import { getGrinders, createGrinder, deleteGrinder } from "../utils/supabase";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 export default function Grinders() {

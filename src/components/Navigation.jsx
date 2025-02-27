@@ -7,7 +7,7 @@ import { getCurrentUser } from "../utils/auth";
 
 const navItems = [
 	{ to: "/", icon: MdHome, label: "Home" },
-	{ to: "/coffee", icon: MdCoffee, label: "Coffee" },
+	{ to: "/beans", icon: PiCoffeeBeanFill, label: "Beans" },
 	{ to: "/roasteries", icon: PiCoffeeBeanFill, label: "Roasteries" },
 	{ to: "/grinders", icon: MdBlender, label: "Grinders" },
 	{ to: "/brewers", icon: MdLocalCafe, label: "Brewers" },

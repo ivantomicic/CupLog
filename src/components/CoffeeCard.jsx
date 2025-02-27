@@ -5,19 +5,7 @@ import { BsCup } from "react-icons/bs";
 import { TbTimeDurationOff } from "react-icons/tb";
 import { motion } from "framer-motion";
 
-function CoffeeCard({ brew, onDelete, isDeleting }) {
-	const handleDelete = async (e) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this brew log?"
-		);
-		if (confirmDelete) {
-			await onDelete(brew.id);
-		}
-	};
-
+function CoffeeCard({ brew }) {
 	return (
 		<motion.div
 			whileTap={{ scale: 0.97 }}

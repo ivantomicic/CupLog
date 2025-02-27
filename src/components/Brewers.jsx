@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-	getBrewers,
+	getCurrentUser,
 	createBrewer,
+	getBrewers,
 	deleteBrewer,
-} from "../utils/supabase-queries";
-import { getCurrentUser } from "../utils/supabase";
+} from "../utils/supabase";
 import Loader from "./Loader";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getBrews, updateBrew, deleteBrew } from "../utils/supabase-queries";
+import { getBrews, updateBrew, deleteBrew } from "../utils/supabase";
 import { analyzeBrewData } from "../utils/openai";
 import Loader from "./Loader";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,54 +23,60 @@ export default function BrewDetails() {
 	const [loading, setLoading] = useState(true);
 	const queryClient = useQueryClient();
 	const { updateHeader } = usePageHeader();
+	const isMounted = useRef(true);
 
 	useEffect(() => {
+		isMounted.current = true;
 		loadBrew();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
+
+	useEffect(() => {
+		return () => {
+			isMounted.current = false;
+		};
+	}, []);
 
 	const loadBrew = async () => {
 		try {
 			const brews = await getBrews();
 			const brew = brews.find((b) => b.id === id);
-			if (!brew) {
-				setError("Brew not found");
-				return;
-			}
-			setBrew(brew);
 
-			// Update the page header with the coffee name
-			if (brew.coffee?.name) {
-				updateHeader({
-					title: `${brew.coffee.name} Brew`,
+			if (isMounted.current) {
+				if (!brew) {
+					setError("Brew not found");
+					return;
+				}
+				setBrew(brew);
+
+				// Update the page header with the bean name
+				if (brew.bean?.name) {
+					updateHeader({
+						title: `${brew.bean.name} Brew`,
+					});
+				} else {
+					updateHeader({ title: "Brew Details" });
+				}
+
+				setEditedBrew({
+					...brew,
+					bean_id: brew.bean?.id,
+					grinder_id: brew.grinder?.id,
+					brewer_id: brew.brewer?.id,
+					roast_date_id: brew.roast_date_id,
+					date: formatDateForInput(brew.date),
 				});
-			} else {
-				updateHeader({ title: "Brew Details" });
 			}
-
-			setEditedBrew({
-				...brew,
-				coffee_id: brew.coffee?.id,
-				grinder_id: brew.grinder?.id,
-				brewer_id: brew.brewer?.id,
-				roast_date_id: brew.roast_date_id,
-				date: formatDateForInput(brew.date),
-			});
 		} catch (err) {
-			setError(err.message);
+			if (isMounted.current) {
+				setError(err.message);
+			}
 		} finally {
-			setLoading(false);
+			if (isMounted.current) {
+				setLoading(false);
+			}
 		}
 	};
-
-	// Set a default title while loading
-	useEffect(() => {
-		updateHeader({ title: "" });
-
-		// Clean up when component unmounts
-		return () => {
-			updateHeader({ title: "" });
-		};
-	}, [updateHeader]);
 
 	const handleSave = async () => {
 		try {
@@ -84,8 +90,8 @@ export default function BrewDetails() {
 			setIsEditing(false);
 
 			// Update header to remove "Editing" prefix
-			if (brew.coffee?.name) {
-				updateHeader({ title: `${brew.coffee.name} Brew` });
+			if (brew.bean?.name) {
+				updateHeader({ title: `${brew.bean.name} Brew` });
 			}
 		} catch (err) {
 			setError(err.message);
@@ -160,19 +166,20 @@ export default function BrewDetails() {
 
 	// Update header when editing state changes
 	useEffect(() => {
-		if (brew?.coffee?.name) {
+		if (brew?.bean?.name) {
 			const title = isEditing
-				? `Editing: ${brew.coffee.name} Brew`
-				: `${brew.coffee.name} Brew`;
+				? `Editing: ${brew.bean.name} Brew`
+				: `${brew.bean.name} Brew`;
 			updateHeader({ title });
 		}
-	}, [isEditing, brew?.coffee?.name, updateHeader]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isEditing, brew?.bean?.name]);
 
 	if (loading) return <Loader />;
 	if (!brew) return <div>Brew not found</div>;
 
-	// Find the selected roast date from coffee's roast dates
-	const selectedRoastDate = brew.coffee?.roast_dates?.find(
+	// Find the selected roast date from bean's roast dates
+	const selectedRoastDate = brew.bean?.roast_dates?.find(
 		(rd) => rd.id === brew.roast_date_id
 	);
 
@@ -209,26 +216,26 @@ export default function BrewDetails() {
 				<div>
 					<div>
 						<label>
-							Coffee:
+							Bean:
 							<select
-								value={editedBrew.coffee_id}
+								value={editedBrew.bean_id}
 								onChange={(e) =>
 									setEditedBrew({
 										...editedBrew,
-										coffee_id: e.target.value,
+										bean_id: e.target.value,
 									})
 								}
-								disabled // Disable changing coffee for now as it requires reloading roast dates
+								disabled
 							>
-								<option value={brew.coffee?.id}>
-									{brew.coffee?.name}
+								<option value={brew.bean?.id}>
+									{brew.bean?.name}
 								</option>
 							</select>
 						</label>
 					</div>
 
-					{brew.coffee?.roast_dates &&
-						brew.coffee.roast_dates.length > 0 && (
+					{brew.bean?.roast_dates &&
+						brew.bean.roast_dates.length > 0 && (
 							<div>
 								<label>
 									Roast Date:
@@ -241,7 +248,7 @@ export default function BrewDetails() {
 											})
 										}
 									>
-										{brew.coffee.roast_dates.map((rd) => (
+										{brew.bean.roast_dates.map((rd) => (
 											<option key={rd.id} value={rd.id}>
 												{new Date(
 													rd.date
@@ -429,7 +436,7 @@ export default function BrewDetails() {
 			) : (
 				<div>
 					<p>Date: {new Date(brew.date).toLocaleString()}</p>
-					<p>Coffee: {brew.coffee?.name}</p>
+					<p>Bean: {brew.bean?.name}</p>
 					<p>
 						Roast Date:{" "}
 						{selectedRoastDate
