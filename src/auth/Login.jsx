@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login, loginWithGoogle, getCurrentUser } from "../utils/auth";
-import ImageMarquee from "./ImageMarquee";
+import ImageMarquee from "../layout/ImageMarquee";
 
 export default function Login() {
 	const navigate = useNavigate();

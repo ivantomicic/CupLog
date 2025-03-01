@@ -2,60 +2,60 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-	getRoasteries,
-	createRoastery,
-	deleteRoastery,
 	getCurrentUser,
+	createBrewer,
+	getBrewers,
+	deleteBrewer,
 } from "../utils/supabase";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
-export default function Roasteries() {
+export default function Brewers() {
 	const queryClient = useQueryClient();
-
-	const [newRoastery, setNewRoastery] = useState({
+	const [newBrewer, setNewBrewer] = useState({
 		name: "",
-		logo: null,
+		type: "Pour Over",
+		image: null,
 	});
 
 	// Update the page header
-	useUpdatePageHeader("Roasteries");
+	useUpdatePageHeader("Brewers", "/brewers/new");
 
 	// Query for fetching brewers with caching
 	const {
-		data: roasteries = [],
+		data: brewers = [],
 		error,
 		isInitialLoading,
 	} = useQuery({
-		queryKey: ["roasteries"],
-		queryFn: getRoasteries,
+		queryKey: ["brewers"],
+		queryFn: getBrewers,
 		staleTime: 30000, // Consider data fresh for 30 seconds
 		cacheTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
 	});
 
 	// Mutation for creating brewers
 	const createMutation = useMutation({
-		mutationFn: async (roasteryData) => {
+		mutationFn: async (brewerData) => {
 			const user = await getCurrentUser();
-			return createRoastery({
-				...roasteryData,
+			return createBrewer({
+				...brewerData,
 				user_id: user.id,
 			});
 		},
-		onSuccess: (newRoastery) => {
-			queryClient.setQueryData(["roasteries"], (old) => [
-				newRoastery,
+		onSuccess: (newBrewer) => {
+			queryClient.setQueryData(["brewers"], (old) => [
+				newBrewer,
 				...(old || []),
 			]);
 		},
 	});
 
-	// Mutation for deleting roastery
+	// Mutation for deleting brewers
 	const deleteMutation = useMutation({
-		mutationFn: deleteRoastery,
-		onSuccess: (_, roasteryId) => {
-			queryClient.setQueryData(["roasteries"], (old) =>
-				old?.filter((roastery) => roastery.id !== roasteryId)
+		mutationFn: deleteBrewer,
+		onSuccess: (_, brewerId) => {
+			queryClient.setQueryData(["brewers"], (old) =>
+				old?.filter((brewer) => brewer.id !== brewerId)
 			);
 		},
 	});
@@ -63,7 +63,7 @@ export default function Roasteries() {
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
 		if (file) {
-			setNewRoastery((prev) => ({ ...prev, logo: file }));
+			setNewBrewer((prev) => ({ ...prev, image: file }));
 		}
 	};
 
@@ -71,28 +71,29 @@ export default function Roasteries() {
 		e.preventDefault();
 
 		try {
-			await createMutation.mutateAsync(newRoastery);
-			setNewRoastery({
+			await createMutation.mutateAsync(newBrewer);
+			setNewBrewer({
 				name: "",
-				logo: null,
+				type: "Pour Over",
+				image: null,
 			});
 		} catch (err) {
-			console.error("Failed to create roastery:", err);
+			console.error("Failed to create brewer:", err);
 		}
 	};
 
-	const handleDelete = async (e, roasteryId) => {
+	const handleDelete = async (e, brewerId) => {
 		e.preventDefault();
 		e.stopPropagation();
 
 		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this roastery? This will affect any brew logs using this roastery."
+			"Are you sure you want to delete this brewer? This will affect any brew logs using this brewer."
 		);
 		if (confirmDelete) {
 			try {
-				await deleteMutation.mutateAsync(roasteryId);
+				await deleteMutation.mutateAsync(brewerId);
 			} catch (err) {
-				console.error("Failed to delete roastery:", err);
+				console.error("Failed to delete brewer:", err);
 			}
 		}
 	};
@@ -104,14 +105,14 @@ export default function Roasteries() {
 		<>
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
-					<div className="form-field  full-width">
+					<div className="form-field">
 						<label>Name:</label>
 						<input
 							type="text"
-							value={newRoastery.name}
+							value={newBrewer.name}
 							onChange={(e) =>
-								setNewRoastery({
-									...newRoastery,
+								setNewBrewer({
+									...newBrewer,
 									name: e.target.value,
 								})
 							}
@@ -120,9 +121,29 @@ export default function Roasteries() {
 						/>
 					</div>
 
+					<div className="form-field">
+						<label>
+							Type:
+							<select
+								value={newBrewer.type}
+								onChange={(e) =>
+									setNewBrewer({
+										...newBrewer,
+										type: e.target.value,
+									})
+								}
+								disabled={createMutation.isPending}
+							>
+								<option>Pour Over</option>
+								<option>Espresso</option>
+								<option>Immersion</option>
+							</select>
+						</label>
+					</div>
+
 					<div className="form-field full-width">
 						<label>
-							Logo:
+							Image:
 							<input
 								type="file"
 								accept="image/*"
@@ -139,7 +160,7 @@ export default function Roasteries() {
 						>
 							{createMutation.isPending
 								? "Adding..."
-								: "Add Roastery"}
+								: "Add Brewer"}
 						</button>
 					</div>
 				</form>
@@ -147,9 +168,9 @@ export default function Roasteries() {
 				<hr style={{ margin: "20px 0" }} />
 
 				<ul>
-					{roasteries.map((roastery) => (
+					{brewers.map((brewer) => (
 						<li
-							key={roastery.id}
+							key={brewer.id}
 							style={{
 								marginBottom: "15px",
 								display: "flex",
@@ -158,13 +179,13 @@ export default function Roasteries() {
 							}}
 						>
 							<Link
-								to={`/roasteries/${roastery.id}`}
+								to={`/brewers/${brewer.id}`}
 								style={{ flex: 1 }}
 							>
-								{roastery.name}
+								{brewer.name} - {brewer.type}
 							</Link>
 							<button
-								onClick={(e) => handleDelete(e, roastery.id)}
+								onClick={(e) => handleDelete(e, brewer.id)}
 								disabled={deleteMutation.isPending}
 								style={{
 									backgroundColor: "#dc3545",

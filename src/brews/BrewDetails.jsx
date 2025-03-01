@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getBrews, updateBrew, deleteBrew } from "../utils/supabase";
 import { analyzeBrewData } from "../utils/openai";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePageHeader } from "../context/PageHeaderContext";
 

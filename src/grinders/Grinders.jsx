@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import { getGrinders, createGrinder, deleteGrinder } from "../utils/supabase";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
@@ -102,7 +102,7 @@ export default function Grinders() {
 		<>
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
-					<div>
+					<div className="form-field">
 						<label>
 							Name:
 							<input
@@ -119,11 +119,13 @@ export default function Grinders() {
 							/>
 						</label>
 					</div>
-					<div>
+					<div className="form-field">
 						<label>
 							Burr Size:
 							<input
-								type="text"
+								type="number"
+								inputMode="decimal"
+								pattern="[0-9]*"
 								value={newGrinder.burrSize}
 								onChange={(e) =>
 									setNewGrinder({
@@ -136,11 +138,10 @@ export default function Grinders() {
 							/>
 						</label>
 					</div>
-					<div>
+					<div className="form-field">
 						<label>
 							Burr Type:
-							<input
-								type="text"
+							<select
 								value={newGrinder.burrType}
 								onChange={(e) =>
 									setNewGrinder({
@@ -148,16 +149,17 @@ export default function Grinders() {
 										burrType: e.target.value,
 									})
 								}
-								required
 								disabled={createMutation.isPending}
-							/>
+							>
+								<option>Flat</option>
+								<option>Conical</option>
+							</select>
 						</label>
 					</div>
-					<div>
+					<div className="form-field">
 						<label>
 							Ideal For:
-							<input
-								type="text"
+							<select
 								value={newGrinder.idealFor}
 								onChange={(e) =>
 									setNewGrinder({
@@ -165,15 +167,20 @@ export default function Grinders() {
 										idealFor: e.target.value,
 									})
 								}
-								required
 								disabled={createMutation.isPending}
-							/>
+							>
+								<option>All</option>
+								<option>Pour Over</option>
+								<option>Espresso</option>
+							</select>
 						</label>
 					</div>
 					<button type="submit" disabled={createMutation.isPending}>
 						{createMutation.isPending ? "Adding..." : "Add Grinder"}
 					</button>
 				</form>
+
+				<hr style={{ margin: "20px 0" }} />
 
 				<ul>
 					{grinders.map((grinder) => (
@@ -191,8 +198,7 @@ export default function Grinders() {
 								style={{ flex: 1 }}
 							>
 								{grinder.name} - {grinder.burr_size}&quot;{" "}
-								{grinder.burr_type} - Ideal for:{" "}
-								{grinder.ideal_for}
+								{grinder.burr_type}
 							</Link>
 							<button
 								onClick={(e) => handleDelete(e, grinder.id)}

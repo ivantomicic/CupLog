@@ -6,7 +6,7 @@ import {
 	addRoastDate,
 	removeRoastDate,
 } from "../utils/supabase";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import { usePageHeader } from "../context/PageHeaderContext";
 
 // Helper function to get the closest roast date to today

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrews, deleteBrew } from "../utils/supabase";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import CoffeeCard from "./CoffeeCard";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 

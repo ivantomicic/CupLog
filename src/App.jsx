@@ -1,21 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
-import Brewers from "./components/Brewers";
-import Grinders from "./components/Grinders";
-import Beans from "./components/Beans";
-import Roasteries from "./components/Roasteries";
-import BrewDetails from "./components/BrewDetails";
-import BeansDetails from "./components/BeansDetails";
-import GrinderDetails from "./components/GrinderDetails";
-import BrewerDetails from "./components/BrewerDetails";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import Settings from "./components/Settings";
-import UpdatePassword from "./components/UpdatePassword";
-import PrivateRoute from "./components/PrivateRoute";
-import Navigation from "./components/Navigation";
-import NewBrew from "./components/NewBrew";
-import PageHeader from "./components/PageHeader";
+import Home from "./misc/Home";
+import Brewers from "./brewers/Brewers";
+import Grinders from "./grinders/Grinders";
+import Beans from "./beans/Beans";
+import Roasteries from "./roasteries/Roasteries";
+import BrewDetails from "./brews/BrewDetails";
+import BeansDetails from "./beans/BeansDetails";
+import GrinderDetails from "./grinders/GrinderDetails";
+import BrewerDetails from "./brewers/BrewerDetails";
+import Login from "./auth/Login";
+import SignUp from "./auth/SignUp";
+import Settings from "./misc/Settings";
+import UpdatePassword from "./auth/UpdatePassword";
+import PrivateRoute from "./auth/PrivateRoute";
+import Navigation from "./layout/Navigation";
+import NewBrew from "./brews/NewBrew";
+import PageHeader from "./layout/PageHeader";
 import { PageHeaderProvider } from "./context/PageHeaderContext";
 
 function App() {

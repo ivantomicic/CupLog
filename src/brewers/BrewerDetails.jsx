@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getBrewers, updateBrewer } from "../utils/supabase";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 
 export default function BrewerDetails() {
 	const { id } = useParams();
-	const navigate = useNavigate();
 	const [brewer, setBrewer] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedBrewer, setEditedBrewer] = useState(null);
@@ -73,21 +72,6 @@ export default function BrewerDetails() {
 					</div>
 					<div>
 						<label>
-							Material:
-							<input
-								type="text"
-								value={editedBrewer.material}
-								onChange={(e) =>
-									setEditedBrewer({
-										...editedBrewer,
-										material: e.target.value,
-									})
-								}
-							/>
-						</label>
-					</div>
-					<div>
-						<label>
 							Type:
 							<select
 								value={editedBrewer.type}
@@ -110,7 +94,6 @@ export default function BrewerDetails() {
 			) : (
 				<div>
 					<p>Name: {brewer.name}</p>
-					<p>Material: {brewer.material}</p>
 					<p>Type: {brewer.type}</p>
 					<button onClick={() => setIsEditing(true)}>Edit</button>
 				</div>

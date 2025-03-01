@@ -10,7 +10,7 @@ import {
 	updateBrew,
 } from "../utils/supabase-queries";
 import { analyzeBrewData } from "../utils/openai";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import {
 	getBeans,
 	createBean,

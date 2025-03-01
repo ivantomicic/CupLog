@@ -2,61 +2,60 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+	getRoasteries,
+	createRoastery,
+	deleteRoastery,
 	getCurrentUser,
-	createBrewer,
-	getBrewers,
-	deleteBrewer,
 } from "../utils/supabase";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
-export default function Brewers() {
+export default function Roasteries() {
 	const queryClient = useQueryClient();
-	const [newBrewer, setNewBrewer] = useState({
+
+	const [newRoastery, setNewRoastery] = useState({
 		name: "",
-		material: "",
-		type: "Pour Over",
-		image: null,
+		logo: null,
 	});
 
 	// Update the page header
-	useUpdatePageHeader("Brewers", "/brewers/new");
+	useUpdatePageHeader("Roasteries");
 
 	// Query for fetching brewers with caching
 	const {
-		data: brewers = [],
+		data: roasteries = [],
 		error,
 		isInitialLoading,
 	} = useQuery({
-		queryKey: ["brewers"],
-		queryFn: getBrewers,
+		queryKey: ["roasteries"],
+		queryFn: getRoasteries,
 		staleTime: 30000, // Consider data fresh for 30 seconds
 		cacheTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
 	});
 
 	// Mutation for creating brewers
 	const createMutation = useMutation({
-		mutationFn: async (brewerData) => {
+		mutationFn: async (roasteryData) => {
 			const user = await getCurrentUser();
-			return createBrewer({
-				...brewerData,
+			return createRoastery({
+				...roasteryData,
 				user_id: user.id,
 			});
 		},
-		onSuccess: (newBrewer) => {
-			queryClient.setQueryData(["brewers"], (old) => [
-				newBrewer,
+		onSuccess: (newRoastery) => {
+			queryClient.setQueryData(["roasteries"], (old) => [
+				newRoastery,
 				...(old || []),
 			]);
 		},
 	});
 
-	// Mutation for deleting brewers
+	// Mutation for deleting roastery
 	const deleteMutation = useMutation({
-		mutationFn: deleteBrewer,
-		onSuccess: (_, brewerId) => {
-			queryClient.setQueryData(["brewers"], (old) =>
-				old?.filter((brewer) => brewer.id !== brewerId)
+		mutationFn: deleteRoastery,
+		onSuccess: (_, roasteryId) => {
+			queryClient.setQueryData(["roasteries"], (old) =>
+				old?.filter((roastery) => roastery.id !== roasteryId)
 			);
 		},
 	});
@@ -64,7 +63,7 @@ export default function Brewers() {
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
 		if (file) {
-			setNewBrewer((prev) => ({ ...prev, image: file }));
+			setNewRoastery((prev) => ({ ...prev, logo: file }));
 		}
 	};
 
@@ -72,30 +71,28 @@ export default function Brewers() {
 		e.preventDefault();
 
 		try {
-			await createMutation.mutateAsync(newBrewer);
-			setNewBrewer({
+			await createMutation.mutateAsync(newRoastery);
+			setNewRoastery({
 				name: "",
-				material: "",
-				type: "Pour Over",
-				image: null,
+				logo: null,
 			});
 		} catch (err) {
-			console.error("Failed to create brewer:", err);
+			console.error("Failed to create roastery:", err);
 		}
 	};
 
-	const handleDelete = async (e, brewerId) => {
+	const handleDelete = async (e, roasteryId) => {
 		e.preventDefault();
 		e.stopPropagation();
 
 		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this brewer? This will affect any brew logs using this brewer."
+			"Are you sure you want to delete this roastery? This will affect any brew logs using this roastery."
 		);
 		if (confirmDelete) {
 			try {
-				await deleteMutation.mutateAsync(brewerId);
+				await deleteMutation.mutateAsync(roasteryId);
 			} catch (err) {
-				console.error("Failed to delete brewer:", err);
+				console.error("Failed to delete roastery:", err);
 			}
 		}
 	};
@@ -111,10 +108,10 @@ export default function Brewers() {
 						<label>Name:</label>
 						<input
 							type="text"
-							value={newBrewer.name}
+							value={newRoastery.name}
 							onChange={(e) =>
-								setNewBrewer({
-									...newBrewer,
+								setNewRoastery({
+									...newRoastery,
 									name: e.target.value,
 								})
 							}
@@ -123,45 +120,9 @@ export default function Brewers() {
 						/>
 					</div>
 
-					<div className="form-field">
-						<label>Material:</label>
-						<input
-							type="text"
-							value={newBrewer.material}
-							onChange={(e) =>
-								setNewBrewer({
-									...newBrewer,
-									material: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</div>
-
-					<div className="form-field">
-						<label>
-							Type:
-							<select
-								value={newBrewer.type}
-								onChange={(e) =>
-									setNewBrewer({
-										...newBrewer,
-										type: e.target.value,
-									})
-								}
-								disabled={createMutation.isPending}
-							>
-								<option>Pour Over</option>
-								<option>Espresso</option>
-								<option>Immersion</option>
-							</select>
-						</label>
-					</div>
-
 					<div className="form-field full-width">
 						<label>
-							Image:
+							Logo:
 							<input
 								type="file"
 								accept="image/*"
@@ -178,7 +139,7 @@ export default function Brewers() {
 						>
 							{createMutation.isPending
 								? "Adding..."
-								: "Add Brewer"}
+								: "Add Roastery"}
 						</button>
 					</div>
 				</form>
@@ -186,9 +147,9 @@ export default function Brewers() {
 				<hr style={{ margin: "20px 0" }} />
 
 				<ul>
-					{brewers.map((brewer) => (
+					{roasteries.map((roastery) => (
 						<li
-							key={brewer.id}
+							key={roastery.id}
 							style={{
 								marginBottom: "15px",
 								display: "flex",
@@ -197,14 +158,13 @@ export default function Brewers() {
 							}}
 						>
 							<Link
-								to={`/brewers/${brewer.id}`}
+								to={`/roasteries/${roastery.id}`}
 								style={{ flex: 1 }}
 							>
-								{brewer.name} - {brewer.material} -{" "}
-								{brewer.type}
+								{roastery.name}
 							</Link>
 							<button
-								onClick={(e) => handleDelete(e, brewer.id)}
+								onClick={(e) => handleDelete(e, roastery.id)}
 								disabled={deleteMutation.isPending}
 								style={{
 									backgroundColor: "#dc3545",

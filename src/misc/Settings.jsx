@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { resetPassword } from "../utils/auth";
 import { supabase, updateUserProfile } from "../utils/supabase";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 
 export default function Settings() {
 	const [user, setUser] = useState(null);

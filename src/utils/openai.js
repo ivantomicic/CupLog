@@ -31,9 +31,9 @@ export const analyzeBrewData = async (brew) => {
 		);
 	}
 
-	if (!brew?.coffee || !brew?.grinder || !brew?.brewer) {
+	if (!brew?.beans || !brew?.grinder || !brew?.brewer) {
 		console.error("Missing brew data:", {
-			hasCoffee: !!brew?.coffee,
+			hasCoffee: !!brew?.beans,
 			hasGrinder: !!brew?.grinder,
 			hasBrewer: !!brew?.brewer,
 		});
@@ -42,7 +42,7 @@ export const analyzeBrewData = async (brew) => {
 
 	try {
 		console.log("Preparing to send request to OpenAI with brew data:", {
-			coffee: brew.coffee.name,
+			coffee: brew.beans.name,
 			grinder: brew.grinder.name,
 			brewer: brew.brewer.name,
 			dose: brew.dose,
@@ -68,15 +68,15 @@ export const analyzeBrewData = async (brew) => {
 				{
 					role: "user",
 					content: `Please analyze this coffee brew:
-          Coffee: ${brew.coffee.name} (${brew.coffee.country || "Unknown"}, ${
-						brew.coffee.region || "Unknown"
-					}, ${brew.coffee.roast || "Unknown"} roast)
+          Coffee: ${brew.beans.name} (${brew.beans.country || "Unknown"}, ${
+						brew.beans.region || "Unknown"
+					}, ${brew.beans.roast || "Unknown"} roast)
           Roast Date: ${
-				brew.coffee?.roast_dates?.find(
+				brew.beans?.roast_dates?.find(
 					(rd) => rd.id === brew.roast_date_id
 				)?.date
 					? new Date(
-							brew.coffee.roast_dates.find(
+							brew.beans.roast_dates.find(
 								(rd) => rd.id === brew.roast_date_id
 							).date
 					  ).toLocaleDateString()

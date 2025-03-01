@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import Loader from "./Loader";
+import Loader from "../misc/Loader";
 import { isAuthenticated } from "../utils/auth";
 
 export default function PrivateRoute({ children }) {
