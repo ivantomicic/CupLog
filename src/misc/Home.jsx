@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrews, deleteBrew } from "../utils/supabase";
 import Loader from "../misc/Loader";
+import NewBrew from "../brews/NewBrew";
 import CoffeeCard from "./CoffeeCard";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
@@ -8,7 +9,11 @@ function Home() {
 	const queryClient = useQueryClient();
 
 	// Update the page header
-	useUpdatePageHeader("Latest Brews", "/brews/new");
+	useUpdatePageHeader({
+		title: "Latest Brews",
+		buttonComponent: NewBrew,
+		buttonComponentTitle: "Log New Brew",
+	});
 
 	// Query for brews
 	const {
@@ -31,8 +36,6 @@ function Home() {
 			);
 		},
 	});
-
-	console.log(brews);
 
 	if (brewsError) return <div>Error: {brewsError.message}</div>;
 	if (isLoadingBrews) return <Loader />;

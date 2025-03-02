@@ -7,6 +7,8 @@ export function PageHeaderProvider({ children }) {
 	const [headerState, setHeaderState] = useState({
 		title: "",
 		buttonTarget: null,
+		buttonComponent: null,
+		buttonIcon: null,
 	});
 
 	const updateHeader = (newState) => {

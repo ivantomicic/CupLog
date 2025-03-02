@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiPlusCircle } from "react-icons/fi";
 import PropTypes from "prop-types";
 import { usePageHeader } from "../context/PageHeaderContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import CustomDrawer from "../components/CustomDrawer"; // Adjust the path as necessary
+import React from "react";
 
 const MotionNavLink = motion(NavLink);
 
@@ -25,7 +27,17 @@ const buttonVariants = {
 
 export default function PageHeader() {
 	const { headerState } = usePageHeader();
-	const { title, buttonTarget } = headerState;
+	const {
+		title,
+		buttonTarget,
+		buttonComponent,
+		buttonIcon,
+		buttonComponentTitle,
+	} = headerState;
+	const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+	const handleDrawerOpen = () => setDrawerOpen(true);
+	const handleDrawerClose = () => setDrawerOpen(false);
 
 	return (
 		<div
@@ -63,33 +75,50 @@ export default function PageHeader() {
 			{/* Button container - always present to maintain layout */}
 			<div
 				style={{
-					width: buttonTarget ? "auto" : "0px",
+					width: buttonTarget || buttonComponent ? "auto" : "0px",
 					overflow: "hidden",
 					flexShrink: 0,
 				}}
 			>
 				<AnimatePresence>
-					{buttonTarget && (
-						<MotionNavLink
-							to={buttonTarget}
-							className="page-header-button"
-							variants={buttonVariants}
-							initial="initial"
-							animate="animate"
-							exit="exit"
-							whileHover="hover"
-							whileTap="tap"
-							transition={{
-								type: "spring",
-								stiffness: 400,
-								damping: 17,
-							}}
-						>
-							<FiPlusCircle />
-						</MotionNavLink>
-					)}
+					{buttonTarget ||
+						(buttonComponent && (
+							<MotionNavLink
+								to={buttonTarget || "#"}
+								className="page-header-button"
+								variants={buttonVariants}
+								initial="initial"
+								animate="animate"
+								exit="exit"
+								whileHover="hover"
+								whileTap="tap"
+								transition={{
+									type: "spring",
+									stiffness: 400,
+									damping: 17,
+								}}
+								onClick={handleDrawerOpen}
+							>
+								{buttonIcon ? <buttonIcon /> : <FiPlusCircle />}
+							</MotionNavLink>
+						))}
 				</AnimatePresence>
 			</div>
+
+			{!buttonTarget && buttonComponent && (
+				<CustomDrawer
+					isOpen={isDrawerOpen}
+					onClose={handleDrawerClose}
+					title={buttonComponentTitle}
+				>
+					{/* Correctly render the buttonComponent */}
+					{buttonComponent ? (
+						React.createElement(buttonComponent)
+					) : (
+						<div>Your form goes here</div>
+					)}
+				</CustomDrawer>
+			)}
 		</div>
 	);
 }

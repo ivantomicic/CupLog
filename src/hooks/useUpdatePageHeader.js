@@ -1,15 +1,29 @@
 import { useEffect } from "react";
 import { usePageHeader } from "../context/PageHeaderContext";
 
-/**
- * Custom hook to update the page header
- * @param {string} title - The title to display in the header
- * @param {string|null} buttonTarget - The target URL for the button, or null to hide the button
- */
-export default function useUpdatePageHeader(title, buttonTarget = null) {
+export default function useUpdatePageHeader({
+	title,
+	buttonTarget = null,
+	buttonComponent = null,
+	buttonComponentTitle = null,
+	buttonIcon = null,
+}) {
 	const { updateHeader } = usePageHeader();
 
 	useEffect(() => {
-		updateHeader({ title, buttonTarget });
-	}, [title, buttonTarget, updateHeader]);
+		updateHeader({
+			title,
+			buttonTarget,
+			buttonComponent,
+			buttonComponentTitle,
+			buttonIcon,
+		});
+	}, [
+		title,
+		buttonTarget,
+		buttonComponent,
+		buttonComponentTitle,
+		buttonIcon,
+		updateHeader,
+	]);
 }
