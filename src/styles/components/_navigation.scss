@@ -1,3 +1,5 @@
+@use "../typography";
+
 .navigation {
 	&-mobile {
 		position: fixed;
@@ -177,35 +179,42 @@
 	}
 }
 
-// Floating Action Button
-.fab {
+.page-header {
 	position: fixed;
-	right: var(--spacing-3);
-	bottom: calc(
-		var(--spacing-8) + var(--spacing-1) + env(safe-area-inset-bottom)
-	);
-	width: 56px;
-	height: 56px;
-	border-radius: 50%;
-	background: var(--colors-brand-primary);
-	color: white;
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding: var(--spacing-2);
+	background: var(--colors-nav-bg);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--colors-nav-border);
+	z-index: 1000;
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
-	justify-content: center;
-	text-decoration: none;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	z-index: 1001;
+
+	@media screen and (display-mode: standalone) {
+		padding-top: calc(var(--safe-area-inset-top) + var(--spacing-1));
+	}
+
+	&-title {
+		@extend .h3;
+	}
+
+	&-button {
+		display: block;
+		background: none;
+		border: none;
+		cursor: pointer;
+
+		svg {
+			width: 1.75em;
+			height: 1.75em;
+		}
+	}
 
 	@media (min-width: 768px) {
-		right: var(--spacing-4);
-		bottom: var(--spacing-4);
-	}
-
-	svg {
-		font-size: 24px;
-	}
-
-	&:hover {
-		background: darken(#264ba2, 5%);
+		left: 240px;
+		width: calc(100% - 240px);
 	}
 }
