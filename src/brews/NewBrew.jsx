@@ -10,8 +10,9 @@ import {
 	getBrews,
 } from "../utils/supabase";
 import { analyzeBrewData } from "../utils/openai";
-import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
-
+import Select from "../components/Select";
+import Input from "../components/Input";
+import DatePicker from "../components/DatePicker";
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
 	if (!roastDates || roastDates.length === 0) return null;
@@ -149,88 +150,55 @@ export default function NewBrew() {
 
 	const selectedBeans = beans.find((b) => b.id === newBrew.beansId);
 
+	console.log(selectedBeans);
+
 	return (
 		<>
 			<form onSubmit={handleSubmit}>
-				<div className="form-field full-width">
-					<label>Beans:</label>
-					<select
-						value={newBrew.beansId}
-						onChange={handleBeansChange}
-						required
-						disabled={createMutation.isPending}
-					>
-						<option value="">Select Beans</option>
-						{beans.map((beans) => {
-							const closestRoastDate =
-								beans.roast_dates?.length > 0
-									? getClosestRoastDate(beans.roast_dates)
-									: null;
-							return (
-								<option key={beans.id} value={beans.id}>
-									{beans.name} -{" "}
-									{closestRoastDate
-										? `Latest roast: ${new Date(
-												closestRoastDate
-										  ).toLocaleDateString()}`
-										: "No roast dates"}
-								</option>
-							);
-						})}
-					</select>
-				</div>
+				<Select
+					label="Select Beans"
+					value={newBrew.beansId}
+					options={beans.map((beans) => {
+						const closestRoastDate =
+							beans.roast_dates?.length > 0
+								? getClosestRoastDate(beans.roast_dates)
+								: null;
+						return {
+							key: beans.id,
+							label: beans.name,
+						};
+					})}
+					onChange={handleBeansChange}
+				/>
 
 				{selectedBeans &&
 					selectedBeans.roast_dates &&
 					selectedBeans.roast_dates.length > 0 && (
-						<div className="form-field">
-							<label>
-								Roast Date:
-								<select
-									value={newBrew.roastDate}
-									onChange={(e) =>
-										setNewBrew({
-											...newBrew,
-											roastDate: e.target.value,
-										})
-									}
-									required
-									disabled={createMutation.isPending}
-								>
-									<option value="">Select Roast Date</option>
-									{[...selectedBeans.roast_dates]
-										.sort(
-											(a, b) =>
-												Math.abs(
-													new Date() - new Date(a)
-												) -
-												Math.abs(
-													new Date() - new Date(b)
-												)
-										)
-										.map((roastDate) => {
-											const isClosest =
-												roastDate ===
-												getClosestRoastDate(
-													selectedBeans.roast_dates
-												);
-											return (
-												<option
-													key={roastDate}
-													value={roastDate}
-												>
-													{new Date(
-														roastDate
-													).toLocaleDateString()}
-													{isClosest
-														? " (Latest)"
-														: ""}
-												</option>
-											);
-										})}
-								</select>
-							</label>
-						</div>
+						<Select
+							label="Roast Date"
+							value={newBrew.roastDate}
+							options={[...selectedBeans.roast_dates]
+								.sort(
+									(a, b) =>
+										Math.abs(new Date() - new Date(a)) -
+										Math.abs(new Date() - new Date(b))
+								)
+								.map((roastDate) => {
+									const isClosest =
+										roastDate ===
+										getClosestRoastDate(
+											selectedBeans.roast_dates
+										);
+									return {
+										key: roastDate,
+										label:
+											roastDate +
+											" " +
+											(isClosest ? "(Latest)" : ""),
+									};
+								})}
+							onChange={handleBeansChange}
+						/>
 					)}
 
 				<div className="form-field full-width">
@@ -249,6 +217,20 @@ export default function NewBrew() {
 						disabled={createMutation.isPending}
 					/>
 				</div>
+
+				<DatePicker
+					label="Date"
+					// value={newBrew.date}
+					onChange={(x) => {
+						const formattedDate = `${x.year}-${String(
+							x.month
+						).padStart(2, "0")}-${String(x.day).padStart(2, "0")}`;
+						setNewBrew({
+							...newBrew,
+							date: formattedDate,
+						});
+					}}
+				/>
 
 				<div className="form-field">
 					<label>Grinder:</label>
@@ -272,23 +254,18 @@ export default function NewBrew() {
 					</select>
 				</div>
 
-				<div className="form-field">
-					<label>Grind Size:</label>
-					<input
-						type="number"
-						inputMode="decimal"
-						pattern="[0-9]*"
-						value={newBrew.grindSize}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								grindSize: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					/>
-				</div>
+				<Input
+					label="Grind Size"
+					value={newBrew.grindSize}
+					suffix="mm"
+					onChange={(e) =>
+						setNewBrew({ ...newBrew, grindSize: e.target.value })
+					}
+					type="number"
+					pattern="[0-9]*"
+					inputMode="decimal"
+					disabled={createMutation.isPending}
+				/>
 
 				<div className="form-field">
 					<label>Brewer:</label>
@@ -312,60 +289,44 @@ export default function NewBrew() {
 					</select>
 				</div>
 
-				<div className="form-field">
-					<label>Brew Time (seconds):</label>
-					<input
-						type="number"
-						pattern="[0-9]*"
-						value={newBrew.brewTime}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								brewTime: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					/>
-				</div>
+				<Input
+					label="Brew Time"
+					value={newBrew.brewTime}
+					suffix="sec"
+					onChange={(e) =>
+						setNewBrew({
+							...newBrew,
+							brewTime: e.target.value,
+						})
+					}
+					type="number"
+					pattern="[0-9]*"
+					disabled={createMutation.isPending}
+				/>
 
-				<div className="form-field">
-					<label>Dose (g):</label>
-					<input
-						type="number"
-						inputMode="decimal"
-						pattern="[0-9]*"
-						step="0.1"
-						value={newBrew.dose}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								dose: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					/>
-				</div>
+				<Input
+					label="Dose"
+					value={newBrew.dose}
+					suffix="g"
+					onChange={(e) =>
+						setNewBrew({ ...newBrew, dose: e.target.value })
+					}
+					type="number"
+					pattern="[0-9]*"
+					disabled={createMutation.isPending}
+				/>
 
-				<div className="form-field">
-					<label>Yield (g):</label>
-					<input
-						type="number"
-						inputMode="decimal"
-						pattern="[0-9]*"
-						step="0.1"
-						value={newBrew.yield}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								yield: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					/>
-				</div>
+				<Input
+					label="Yield"
+					value={newBrew.yield}
+					suffix="g"
+					onChange={(e) =>
+						setNewBrew({ ...newBrew, yield: e.target.value })
+					}
+					type="number"
+					pattern="[0-9]*"
+					disabled={createMutation.isPending}
+				/>
 
 				<div
 					className="form-field full-width"

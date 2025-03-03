@@ -8,6 +8,9 @@ import {
 	deleteBean,
 	getRoasteries,
 } from "../utils/supabase";
+import Select from "../components/Select";
+import Input from "../components/Input";
+import DatePicker from "../components/DatePicker";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 // Helper function to get the closest roast date to today
@@ -95,19 +98,19 @@ export default function Beans() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		try {
-			await createMutation.mutateAsync({
-				name: newBeans.name,
-				country: newBeans.country,
-				region: newBeans.region,
-				farm: newBeans.farm,
-				altitude: newBeans.altitude,
-				roastType: newBeans.roastType,
-				roastery: newBeans.roastery,
-			});
-		} catch (err) {
-			console.error("Failed to create bean:", err);
-		}
+		// If roastDate is already in ISO format from DatePicker, use it directly
+		const newBean = {
+			name: newBeans.name,
+			country: newBeans.country,
+			region: newBeans.region,
+			farm: newBeans.farm,
+			altitude: newBeans.altitude,
+			roastType: newBeans.roastType,
+			roastery: newBeans.roastery,
+			roast_dates: newRoastDate ? [newRoastDate] : [],
+		};
+
+		await createMutation.mutateAsync(newBean);
 	};
 
 	const handleDelete = async (e, beansId) => {
@@ -133,125 +136,124 @@ export default function Beans() {
 		<>
 			<main className="main-content">
 				<form onSubmit={handleSubmit}>
-					<div className="form-field">
-						<label>Name:</label>
-						<input
-							type="text"
-							value={newBeans.name}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									name: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</div>
-					<div className="form-field">
-						<label>Country:</label>
-						<input
-							type="text"
-							value={newBeans.country}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									country: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</div>
-					<div className="form-field">
-						<label>Region:</label>
-						<input
-							type="text"
-							value={newBeans.region}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									region: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</div>
-					<div className="form-field">
-						<label>Farm:</label>
-						<input
-							type="text"
-							value={newBeans.farm}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									farm: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</div>
-					<div className="form-field">
-						<label>Altitude:</label>
-						<input
-							type="text"
-							value={newBeans.altitude}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									altitude: e.target.value,
-								})
-							}
-							required
-							disabled={createMutation.isPending}
-						/>
-					</div>
-					<div className="form-field">
-						<label>Roast Type:</label>
-						<select
-							value={newBeans.roastType}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									roastType: e.target.value,
-								})
-							}
-							disabled={createMutation.isPending}
-						>
-							<option value="Espresso">Espresso</option>
-							<option value="Filter">Filter</option>
-							<option value="Omni">Omni</option>
-						</select>
-					</div>
-					<div className="form-field full-width">
-						<label>Roastery:</label>
-						<select
-							value={newBeans.roastery}
-							onChange={(e) =>
-								setNewBeans({
-									...newBeans,
-									roastery: e.target.value,
-								})
-							}
-						>
-							{roasteries.map((roastery) => (
-								<option key={roastery.id} value={roastery.id}>
-									{roastery.name}
-								</option>
-							))}
-						</select>
-					</div>
-					<div className="form-field full-width">
-						<label>Initial Roast Date:</label>
-						<input
-							type="date"
-							value={newRoastDate}
-							onChange={(e) => setNewRoastDate(e.target.value)}
-							disabled={createMutation.isPending}
-						/>
-					</div>
+					<Input
+						label="Name"
+						value={newBeans.name}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								name: e.target.value,
+							});
+						}}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Country"
+						value={newBeans.country}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								country: e.target.value,
+							});
+						}}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Region"
+						value={newBeans.region}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								region: e.target.value,
+							});
+						}}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Farm"
+						value={newBeans.farm}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								farm: e.target.value,
+							});
+						}}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Altitude"
+						value={newBeans.altitude}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								altitude: e.target.value,
+							});
+						}}
+						suffix="meters"
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Select
+						label="Roast Type"
+						value={newBeans.roastType}
+						options={[
+							{
+								key: "Espresso",
+								label: "Espresso",
+							},
+							{
+								key: "Filter",
+								label: "Filter",
+							},
+							{
+								key: "Omni",
+								label: "Omni",
+							},
+						]}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								roastType: e.target.value,
+							});
+						}}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Select
+						label="Roastery"
+						value={newBeans.roastery}
+						options={roasteries.map((roastery) => ({
+							key: roastery.id,
+							label: roastery.name,
+						}))}
+						onChange={(e) => {
+							setNewBeans({
+								...newBeans,
+								roastery: e.target.value,
+							});
+						}}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<DatePicker
+						label="Initial Roast Date"
+						onChange={(x) => {
+							console.log(x);
+							setNewRoastDate(x);
+						}}
+					/>
+
 					<div className="form-field full-width">
 						<button
 							type="submit"
