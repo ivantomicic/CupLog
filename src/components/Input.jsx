@@ -19,18 +19,16 @@ function Input({
 	...props
 }) {
 	return (
-		<div className="form-field">
-			<InputComponent
-				label={label}
-				placeholder={placeholder}
-				type={type}
-				value={value}
-				onChange={onChange}
-				disabled={isDisabled}
-				{...(suffix && { endContent: endContent(suffix) })}
-				{...props}
-			/>
-		</div>
+		<InputComponent
+			label={label}
+			placeholder={placeholder}
+			type={type}
+			value={value}
+			onChange={onChange}
+			disabled={isDisabled}
+			{...(suffix && { endContent: endContent(suffix) })}
+			{...props}
+		/>
 	);
 }
 export default Input;

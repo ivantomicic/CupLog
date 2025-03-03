@@ -438,7 +438,16 @@ export default function BrewDetails() {
 				</div>
 			) : (
 				<div>
-					<p>Date: {new Date(brew.date).toLocaleString()}</p>
+					<p>
+						Date:{" "}
+						{new Date(brew.date).toLocaleDateString("sr-RS", {
+							day: "2-digit",
+							month: "2-digit",
+							year: "numeric",
+							hour: "2-digit",
+							minute: "2-digit",
+						})}
+					</p>
 					<p>Beans: {brew.beans?.name}</p>
 					{selectedRoastDate && (
 						<p>

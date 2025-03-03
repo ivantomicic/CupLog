@@ -27,19 +27,13 @@ function CoffeeCard({ brew }) {
 					)}
 
 					<div className="information">
-						{new Date(brew.date).toLocaleDateString("en-US", {
-							weekday: "long",
+						{new Date(brew.date).toLocaleDateString("sr-RS", {
 							day: "2-digit",
-							month: "long",
+							month: "2-digit",
 							year: "numeric",
-						})}{" "}
-						-{" "}
-						{new Date(brew.date).toLocaleTimeString("en-US", {
 							hour: "2-digit",
 							minute: "2-digit",
-							hour12: false,
 						})}
-						h
 					</div>
 				</div>
 

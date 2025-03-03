@@ -5,18 +5,14 @@ import {
 
 function Select({ options, value, onChange, label }) {
 	return (
-		<div className="form-field">
-			<SelectComponent
-				label={label}
-				value={value}
-				items={options}
-				onChange={onChange}
-			>
-				{(item) => (
-					<SelectItemComponent>{item.label}</SelectItemComponent>
-				)}
-			</SelectComponent>
-		</div>
+		<SelectComponent
+			label={label}
+			defaultSelectedKeys={[value]}
+			items={options}
+			onChange={onChange}
+		>
+			{(item) => <SelectItemComponent>{item.label}</SelectItemComponent>}
+		</SelectComponent>
 	);
 }
 export default Select;

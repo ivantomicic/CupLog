@@ -32,6 +32,8 @@ export const createBrew = async (brew) => {
 	// Use the latest roast date from the roast_dates array
 	const latestRoastDate = brew.roastDates?.[0] || null;
 
+	console.log("brew date to database", brew.date);
+
 	const { data, error } = await supabase
 		.from("brews")
 		.insert([

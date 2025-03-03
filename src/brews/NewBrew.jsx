@@ -13,6 +13,9 @@ import { analyzeBrewData } from "../utils/openai";
 import Select from "../components/Select";
 import Input from "../components/Input";
 import DatePicker from "../components/DatePicker";
+
+import { Button, ButtonGroup } from "@heroui/react";
+
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
 	if (!roastDates || roastDates.length === 0) return null;
@@ -25,6 +28,9 @@ const getClosestRoastDate = (roastDates) => {
 		return currentDiff < closestDiff ? current : closest;
 	});
 };
+
+// Set this to false to skip AI analysis
+const ENABLE_AI_ANALYSIS = false;
 
 export default function NewBrew() {
 	const navigate = useNavigate();
@@ -74,6 +80,11 @@ export default function NewBrew() {
 		mutationFn: async (brewData) => {
 			// First create the brew without AI suggestions
 			const brew = await createBrew(brewData);
+
+			// Skip AI analysis if disabled
+			if (!ENABLE_AI_ANALYSIS) {
+				return brew;
+			}
 
 			try {
 				// Get the full brew data with relationships for AI analysis
@@ -138,7 +149,9 @@ export default function NewBrew() {
 		e.preventDefault();
 
 		try {
-			await createMutation.mutateAsync(newBrew);
+			const response = await createMutation.mutateAsync({
+				...newBrew,
+			});
 		} catch (err) {
 			console.error("Failed to create brew:", err);
 		}
@@ -150,11 +163,9 @@ export default function NewBrew() {
 
 	const selectedBeans = beans.find((b) => b.id === newBrew.beansId);
 
-	console.log(selectedBeans);
-
 	return (
 		<>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
 				<Select
 					label="Select Beans"
 					value={newBrew.beansId}
@@ -192,67 +203,47 @@ export default function NewBrew() {
 									return {
 										key: roastDate,
 										label:
-											roastDate +
-											" " +
-											(isClosest ? "(Latest)" : ""),
+											new Date(roastDate)
+												.toLocaleDateString("en-GB", {
+													day: "2-digit",
+													month: "2-digit",
+													year: "numeric",
+												})
+												.replace(/\//g, " / ") +
+											(isClosest ? " (Freshest)" : ""),
 									};
 								})}
 							onChange={handleBeansChange}
 						/>
 					)}
 
-				<div className="form-field full-width">
-					<label>Date:</label>
-
-					<input
-						type="datetime-local"
-						value={newBrew.date}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								date: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					/>
-				</div>
-
 				<DatePicker
-					label="Date"
-					// value={newBrew.date}
+					label="Date & Time"
+					allowTimePicker
 					onChange={(x) => {
-						const formattedDate = `${x.year}-${String(
-							x.month
-						).padStart(2, "0")}-${String(x.day).padStart(2, "0")}`;
 						setNewBrew({
 							...newBrew,
-							date: formattedDate,
+							date: x,
 						});
 					}}
 				/>
 
-				<div className="form-field">
-					<label>Grinder:</label>
-					<select
-						value={newBrew.grinderId}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								grinderId: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					>
-						<option value="">Select Grinder</option>
-						{grinders.map((grinder) => (
-							<option key={grinder.id} value={grinder.id}>
-								{grinder.name}
-							</option>
-						))}
-					</select>
-				</div>
+				<Select
+					label="Grinders"
+					value={newBrew.grinderId}
+					options={grinders.map((grinder) => ({
+						key: grinder.id,
+						label: grinder.name,
+					}))}
+					onChange={(e) =>
+						setNewBrew({
+							...newBrew,
+							grinderId: e.target.value,
+						})
+					}
+					required
+					disabled={createMutation.isPending}
+				/>
 
 				<Input
 					label="Grind Size"
@@ -267,27 +258,22 @@ export default function NewBrew() {
 					disabled={createMutation.isPending}
 				/>
 
-				<div className="form-field">
-					<label>Brewer:</label>
-					<select
-						value={newBrew.brewerId}
-						onChange={(e) =>
-							setNewBrew({
-								...newBrew,
-								brewerId: e.target.value,
-							})
-						}
-						required
-						disabled={createMutation.isPending}
-					>
-						<option value="">Select Brewer</option>
-						{brewers.map((brewer) => (
-							<option key={brewer.id} value={brewer.id}>
-								{brewer.name}
-							</option>
-						))}
-					</select>
-				</div>
+				<Select
+					label="Brewer"
+					value={newBrew.brewerId}
+					options={brewers.map((brewer) => ({
+						key: brewer.id,
+						label: brewer.name,
+					}))}
+					onChange={(e) =>
+						setNewBrew({
+							...newBrew,
+							brewerId: e.target.value,
+						})
+					}
+					required
+					disabled={createMutation.isPending}
+				/>
 
 				<Input
 					label="Brew Time"
@@ -361,15 +347,20 @@ export default function NewBrew() {
 					</label>
 				</div>
 
-				<div className="form-field full-width">
-					<button type="submit" disabled={createMutation.isPending}>
-						{createMutation.isPending
+				<Button
+					color="primary"
+					type="submit"
+					disabled={createMutation.isPending}
+					className="col-span-2"
+				>
+					{createMutation.isPending
+						? ENABLE_AI_ANALYSIS
 							? "Logging Brew and Analyzing..."
-							: "Log Brew"}
-					</button>
-				</div>
+							: "Logging Brew..."
+						: "Log Brew"}
+				</Button>
 			</form>
-			{createMutation.isPending && (
+			{createMutation.isPending && ENABLE_AI_ANALYSIS && (
 				<div>
 					<h3>AI Analysis in Progress</h3>
 					<p>Analyzing your brew data... Please wait.</p>

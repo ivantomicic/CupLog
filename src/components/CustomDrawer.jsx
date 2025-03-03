@@ -15,6 +15,9 @@ function CustomDrawer({ isOpen, onClose, title, children }) {
 			onOpenChange={onClose}
 			placement="bottom"
 			size="auto"
+			classNames={{
+				body: "mb-4 pb-[var(--safe-area-inset-bottom)]",
+			}}
 		>
 			<DrawerContent>
 				{(onClose) => (
