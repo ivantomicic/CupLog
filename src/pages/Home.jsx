@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrews, deleteBrew } from "../utils/supabase";
 import Loader from "../misc/Loader";
 import NewBrew from "../brews/NewBrew";
-import CoffeeCard from "./CoffeeCard";
+import CoffeeCard from "../misc/CoffeeCard";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 function Home() {

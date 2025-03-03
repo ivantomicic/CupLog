@@ -103,111 +103,101 @@ export default function Brewers() {
 
 	return (
 		<>
-			<main className="main-content">
-				<form onSubmit={handleSubmit}>
-					<div className="form-field">
-						<label>Name:</label>
-						<input
-							type="text"
-							value={newBrewer.name}
+			<form onSubmit={handleSubmit}>
+				<div className="form-field">
+					<label>Name:</label>
+					<input
+						type="text"
+						value={newBrewer.name}
+						onChange={(e) =>
+							setNewBrewer({
+								...newBrewer,
+								name: e.target.value,
+							})
+						}
+						required
+						disabled={createMutation.isPending}
+					/>
+				</div>
+
+				<div className="form-field">
+					<label>
+						Type:
+						<select
+							value={newBrewer.type}
 							onChange={(e) =>
 								setNewBrewer({
 									...newBrewer,
-									name: e.target.value,
+									type: e.target.value,
 								})
 							}
-							required
+							disabled={createMutation.isPending}
+						>
+							<option>Pour Over</option>
+							<option>Espresso</option>
+							<option>Immersion</option>
+						</select>
+					</label>
+				</div>
+
+				<div className="form-field full-width">
+					<label>
+						Image:
+						<input
+							type="file"
+							accept="image/*"
+							onChange={handleImageChange}
 							disabled={createMutation.isPending}
 						/>
-					</div>
+					</label>
+				</div>
 
-					<div className="form-field">
-						<label>
-							Type:
-							<select
-								value={newBrewer.type}
-								onChange={(e) =>
-									setNewBrewer({
-										...newBrewer,
-										type: e.target.value,
-									})
-								}
-								disabled={createMutation.isPending}
-							>
-								<option>Pour Over</option>
-								<option>Espresso</option>
-								<option>Immersion</option>
-							</select>
-						</label>
-					</div>
+				<div className="form-field full-width">
+					<button type="submit" disabled={createMutation.isPending}>
+						{createMutation.isPending ? "Adding..." : "Add Brewer"}
+					</button>
+				</div>
+			</form>
 
-					<div className="form-field full-width">
-						<label>
-							Image:
-							<input
-								type="file"
-								accept="image/*"
-								onChange={handleImageChange}
-								disabled={createMutation.isPending}
-							/>
-						</label>
-					</div>
+			<hr style={{ margin: "20px 0" }} />
 
-					<div className="form-field full-width">
+			<ul>
+				{brewers.map((brewer) => (
+					<li
+						key={brewer.id}
+						style={{
+							marginBottom: "15px",
+							display: "flex",
+							alignItems: "center",
+							gap: "10px",
+						}}
+					>
+						<Link to={`/brewers/${brewer.id}`} style={{ flex: 1 }}>
+							{brewer.name} - {brewer.type}
+						</Link>
 						<button
-							type="submit"
-							disabled={createMutation.isPending}
-						>
-							{createMutation.isPending
-								? "Adding..."
-								: "Add Brewer"}
-						</button>
-					</div>
-				</form>
-
-				<hr style={{ margin: "20px 0" }} />
-
-				<ul>
-					{brewers.map((brewer) => (
-						<li
-							key={brewer.id}
+							onClick={(e) => handleDelete(e, brewer.id)}
+							disabled={deleteMutation.isPending}
 							style={{
-								marginBottom: "15px",
-								display: "flex",
-								alignItems: "center",
-								gap: "10px",
+								backgroundColor: "#dc3545",
+								color: "white",
+								border: "none",
+								padding: "5px 10px",
+								borderRadius: "4px",
+								cursor: deleteMutation.isPending
+									? "not-allowed"
+									: "pointer",
+								minWidth: "70px",
+								opacity: deleteMutation.isPending ? 0.7 : 1,
 							}}
 						>
-							<Link
-								to={`/brewers/${brewer.id}`}
-								style={{ flex: 1 }}
-							>
-								{brewer.name} - {brewer.type}
-							</Link>
-							<button
-								onClick={(e) => handleDelete(e, brewer.id)}
-								disabled={deleteMutation.isPending}
-								style={{
-									backgroundColor: "#dc3545",
-									color: "white",
-									border: "none",
-									padding: "5px 10px",
-									borderRadius: "4px",
-									cursor: deleteMutation.isPending
-										? "not-allowed"
-										: "pointer",
-									minWidth: "70px",
-									opacity: deleteMutation.isPending ? 0.7 : 1,
-								}}
-							>
-								{deleteMutation.isPending
-									? "Deleting..."
-									: "Delete"}
-							</button>
-						</li>
-					))}
-				</ul>
-			</main>
+							{deleteMutation.isPending
+								? "Deleting..."
+								: "Delete"}
+						</button>
+					</li>
+				))}
+			</ul>
 		</>
 	);
 }

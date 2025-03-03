@@ -102,91 +102,86 @@ export default function Roasteries() {
 
 	return (
 		<>
-			<main className="main-content">
-				<form onSubmit={handleSubmit}>
-					<div className="form-field  full-width">
-						<label>Name:</label>
+			<form onSubmit={handleSubmit}>
+				<div className="form-field  full-width">
+					<label>Name:</label>
+					<input
+						type="text"
+						value={newRoastery.name}
+						onChange={(e) =>
+							setNewRoastery({
+								...newRoastery,
+								name: e.target.value,
+							})
+						}
+						required
+						disabled={createMutation.isPending}
+					/>
+				</div>
+
+				<div className="form-field full-width">
+					<label>
+						Logo:
 						<input
-							type="text"
-							value={newRoastery.name}
-							onChange={(e) =>
-								setNewRoastery({
-									...newRoastery,
-									name: e.target.value,
-								})
-							}
-							required
+							type="file"
+							accept="image/*"
+							onChange={handleImageChange}
 							disabled={createMutation.isPending}
 						/>
-					</div>
+					</label>
+				</div>
 
-					<div className="form-field full-width">
-						<label>
-							Logo:
-							<input
-								type="file"
-								accept="image/*"
-								onChange={handleImageChange}
-								disabled={createMutation.isPending}
-							/>
-						</label>
-					</div>
+				<div className="form-field full-width">
+					<button type="submit" disabled={createMutation.isPending}>
+						{createMutation.isPending
+							? "Adding..."
+							: "Add Roastery"}
+					</button>
+				</div>
+			</form>
 
-					<div className="form-field full-width">
-						<button
-							type="submit"
-							disabled={createMutation.isPending}
+			<hr style={{ margin: "20px 0" }} />
+
+			<ul>
+				{roasteries.map((roastery) => (
+					<li
+						key={roastery.id}
+						style={{
+							marginBottom: "15px",
+							display: "flex",
+							alignItems: "center",
+							gap: "10px",
+						}}
+					>
+						<Link
+							to={`/roasteries/${roastery.id}`}
+							style={{ flex: 1 }}
 						>
-							{createMutation.isPending
-								? "Adding..."
-								: "Add Roastery"}
-						</button>
-					</div>
-				</form>
-
-				<hr style={{ margin: "20px 0" }} />
-
-				<ul>
-					{roasteries.map((roastery) => (
-						<li
-							key={roastery.id}
+							{roastery.name}
+						</Link>
+						<button
+							onClick={(e) => handleDelete(e, roastery.id)}
+							disabled={deleteMutation.isPending}
 							style={{
-								marginBottom: "15px",
-								display: "flex",
-								alignItems: "center",
-								gap: "10px",
+								backgroundColor: "#dc3545",
+								color: "white",
+								border: "none",
+								padding: "5px 10px",
+								borderRadius: "4px",
+								cursor: deleteMutation.isPending
+									? "not-allowed"
+									: "pointer",
+								minWidth: "70px",
+								opacity: deleteMutation.isPending ? 0.7 : 1,
 							}}
 						>
-							<Link
-								to={`/roasteries/${roastery.id}`}
-								style={{ flex: 1 }}
-							>
-								{roastery.name}
-							</Link>
-							<button
-								onClick={(e) => handleDelete(e, roastery.id)}
-								disabled={deleteMutation.isPending}
-								style={{
-									backgroundColor: "#dc3545",
-									color: "white",
-									border: "none",
-									padding: "5px 10px",
-									borderRadius: "4px",
-									cursor: deleteMutation.isPending
-										? "not-allowed"
-										: "pointer",
-									minWidth: "70px",
-									opacity: deleteMutation.isPending ? 0.7 : 1,
-								}}
-							>
-								{deleteMutation.isPending
-									? "Deleting..."
-									: "Delete"}
-							</button>
-						</li>
-					))}
-				</ul>
-			</main>
+							{deleteMutation.isPending
+								? "Deleting..."
+								: "Delete"}
+						</button>
+					</li>
+				))}
+			</ul>
 		</>
 	);
 }

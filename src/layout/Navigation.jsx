@@ -7,10 +7,12 @@ import { getCurrentUser } from "../utils/auth";
 
 const navItems = [
 	{ to: "/", icon: MdHome, label: "Home" },
-	{ to: "/beans", icon: PiCoffeeBeanFill, label: "Beans" },
-	{ to: "/roasteries", icon: PiCoffeeBeanFill, label: "Roasteries" },
-	{ to: "/grinders", icon: MdBlender, label: "Grinders" },
-	{ to: "/brewers", icon: MdLocalCafe, label: "Brewers" },
+	{ to: "/coffee", icon: PiCoffeeBeanFill, label: "Coffee" },
+	// { to: "/beans", icon: PiCoffeeBeanFill, label: "Beans" },
+	// { to: "/roasteries", icon: PiCoffeeBeanFill, label: "Roasteries" },
+	{ to: "/equipment", icon: MdBlender, label: "Equipment" },
+	// { to: "/grinders", icon: MdBlender, label: "Grinders" },
+	// { to: "/brewers", icon: MdLocalCafe, label: "Brewers" },
 ];
 
 const MotionNavLink = motion(NavLink);

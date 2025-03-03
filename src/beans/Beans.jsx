@@ -12,6 +12,7 @@ import Select from "../components/Select";
 import Input from "../components/Input";
 import DatePicker from "../components/DatePicker";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
+import { Card, CardHeader, CardBody, CardFooter } from "@heroui/react";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -134,151 +135,146 @@ export default function Beans() {
 
 	return (
 		<>
-			<main className="main-content">
-				<form onSubmit={handleSubmit}>
-					<Input
-						label="Name"
-						value={newBeans.name}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								name: e.target.value,
-							});
-						}}
-						required
-						disabled={createMutation.isPending}
-					/>
+			<form onSubmit={handleSubmit}>
+				<Input
+					label="Name"
+					value={newBeans.name}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							name: e.target.value,
+						});
+					}}
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<Input
-						label="Country"
-						value={newBeans.country}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								country: e.target.value,
-							});
-						}}
-						required
-						disabled={createMutation.isPending}
-					/>
+				<Input
+					label="Country"
+					value={newBeans.country}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							country: e.target.value,
+						});
+					}}
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<Input
-						label="Region"
-						value={newBeans.region}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								region: e.target.value,
-							});
-						}}
-						required
-						disabled={createMutation.isPending}
-					/>
+				<Input
+					label="Region"
+					value={newBeans.region}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							region: e.target.value,
+						});
+					}}
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<Input
-						label="Farm"
-						value={newBeans.farm}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								farm: e.target.value,
-							});
-						}}
-						required
-						disabled={createMutation.isPending}
-					/>
+				<Input
+					label="Farm"
+					value={newBeans.farm}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							farm: e.target.value,
+						});
+					}}
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<Input
-						label="Altitude"
-						value={newBeans.altitude}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								altitude: e.target.value,
-							});
-						}}
-						suffix="meters"
-						required
-						disabled={createMutation.isPending}
-					/>
+				<Input
+					label="Altitude"
+					value={newBeans.altitude}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							altitude: e.target.value,
+						});
+					}}
+					suffix="meters"
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<Select
-						label="Roast Type"
-						value={newBeans.roastType}
-						options={[
-							{
-								key: "Espresso",
-								label: "Espresso",
-							},
-							{
-								key: "Filter",
-								label: "Filter",
-							},
-							{
-								key: "Omni",
-								label: "Omni",
-							},
-						]}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								roastType: e.target.value,
-							});
-						}}
-						required
-						disabled={createMutation.isPending}
-					/>
+				<Select
+					label="Roast Type"
+					value={newBeans.roastType}
+					options={[
+						{
+							key: "Espresso",
+							label: "Espresso",
+						},
+						{
+							key: "Filter",
+							label: "Filter",
+						},
+						{
+							key: "Omni",
+							label: "Omni",
+						},
+					]}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							roastType: e.target.value,
+						});
+					}}
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<Select
-						label="Roastery"
-						value={newBeans.roastery}
-						options={roasteries.map((roastery) => ({
-							key: roastery.id,
-							label: roastery.name,
-						}))}
-						onChange={(e) => {
-							setNewBeans({
-								...newBeans,
-								roastery: e.target.value,
-							});
-						}}
-						required
-						disabled={createMutation.isPending}
-					/>
+				<Select
+					label="Roastery"
+					value={newBeans.roastery}
+					options={roasteries.map((roastery) => ({
+						key: roastery.id,
+						label: roastery.name,
+					}))}
+					onChange={(e) => {
+						setNewBeans({
+							...newBeans,
+							roastery: e.target.value,
+						});
+					}}
+					required
+					disabled={createMutation.isPending}
+				/>
 
-					<DatePicker
-						label="Initial Roast Date"
-						onChange={(x) => {
-							console.log(x);
-							setNewRoastDate(x);
-						}}
-					/>
+				<DatePicker
+					label="Initial Roast Date"
+					onChange={(x) => {
+						console.log(x);
+						setNewRoastDate(x);
+					}}
+				/>
 
-					<div className="form-field full-width">
-						<button
-							type="submit"
-							disabled={createMutation.isPending}
-						>
-							{createMutation.isPending
-								? "Adding..."
-								: "Add Bean"}
-						</button>
-					</div>
-				</form>
+				<div className="form-field full-width">
+					<button type="submit" disabled={createMutation.isPending}>
+						{createMutation.isPending ? "Adding..." : "Add Bean"}
+					</button>
+				</div>
+			</form>
 
-				<hr style={{ margin: "20px 0" }} />
+			<hr style={{ margin: "20px 0" }} />
 
-				<div className="bean-list">
-					{beans.map((bean) => {
-						const closestRoastDate = getClosestRoastDate(
-							bean.roast_dates
-						);
-						return (
-							<div key={bean.id} className="bean-item">
-								<Link
-									to={`/beans/${bean.id}`}
-									className="bean-details"
-								>
+			<div className="grid grid-cols-3 gap-6">
+				{beans.map((bean) => {
+					const closestRoastDate = getClosestRoastDate(
+						bean.roast_dates
+					);
+					return (
+						<Card key={bean.id}>
+							<Link
+								to={`/beans/${bean.id}`}
+								className="bean-details"
+							>
+								<CardBody>
 									<h3>{bean.name}</h3>
 									<p>
 										{bean.country}, {bean.region}
@@ -294,21 +290,25 @@ export default function Beans() {
 											).toLocaleDateString()}
 										</p>
 									)}
-								</Link>
-								<button
-									onClick={(e) => handleDelete(e, bean.id)}
-									disabled={deleteMutation.isPending}
-									className="delete-button"
-								>
-									{deleteMutation.isPending
-										? "Deleting..."
-										: "Delete"}
-								</button>
-							</div>
-						);
-					})}
-				</div>
-			</main>
+								</CardBody>
+								<CardFooter>
+									<button
+										onClick={(e) =>
+											handleDelete(e, bean.id)
+										}
+										disabled={deleteMutation.isPending}
+										className="delete-button"
+									>
+										{deleteMutation.isPending
+											? "Deleting..."
+											: "Delete"}
+									</button>
+								</CardFooter>
+							</Link>
+						</Card>
+					);
+				})}
+			</div>
 		</>
 	);
 }

@@ -116,132 +116,128 @@ export default function Grinders() {
 
 	return (
 		<>
-			<main className="main-content">
-				<form onSubmit={handleSubmit}>
-					<div className="form-field">
-						<label>
-							Name:
-							<input
-								type="text"
-								value={newGrinder.name}
-								onChange={(e) =>
-									setNewGrinder({
-										...newGrinder,
-										name: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
-					</div>
-					<div className="form-field">
-						<label>
-							Burr Size:
-							<input
-								type="number"
-								inputMode="decimal"
-								pattern="[0-9]*"
-								value={newGrinder.burrSize}
-								onChange={(e) =>
-									setNewGrinder({
-										...newGrinder,
-										burrSize: e.target.value,
-									})
-								}
-								required
-								disabled={createMutation.isPending}
-							/>
-						</label>
-					</div>
-					<div className="form-field">
-						<label>
-							Burr Type:
-							<select
-								value={newGrinder.burrType}
-								onChange={(e) =>
-									setNewGrinder({
-										...newGrinder,
-										burrType: e.target.value,
-									})
-								}
-								disabled={createMutation.isPending}
-							>
-								<option>Flat</option>
-								<option>Conical</option>
-							</select>
-						</label>
-					</div>
-					<div className="form-field">
-						<label>
-							Ideal For:
-							<select
-								value={newGrinder.idealFor}
-								onChange={(e) =>
-									setNewGrinder({
-										...newGrinder,
-										idealFor: e.target.value,
-									})
-								}
-								disabled={createMutation.isPending}
-							>
-								<option>All</option>
-								<option>Pour Over</option>
-								<option>Espresso</option>
-							</select>
-						</label>
-					</div>
-					<button type="submit" disabled={createMutation.isPending}>
-						{createMutation.isPending ? "Adding..." : "Add Grinder"}
-					</button>
-				</form>
+			<form onSubmit={handleSubmit}>
+				<div className="form-field">
+					<label>
+						Name:
+						<input
+							type="text"
+							value={newGrinder.name}
+							onChange={(e) =>
+								setNewGrinder({
+									...newGrinder,
+									name: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
+					</label>
+				</div>
+				<div className="form-field">
+					<label>
+						Burr Size:
+						<input
+							type="number"
+							inputMode="decimal"
+							pattern="[0-9]*"
+							value={newGrinder.burrSize}
+							onChange={(e) =>
+								setNewGrinder({
+									...newGrinder,
+									burrSize: e.target.value,
+								})
+							}
+							required
+							disabled={createMutation.isPending}
+						/>
+					</label>
+				</div>
+				<div className="form-field">
+					<label>
+						Burr Type:
+						<select
+							value={newGrinder.burrType}
+							onChange={(e) =>
+								setNewGrinder({
+									...newGrinder,
+									burrType: e.target.value,
+								})
+							}
+							disabled={createMutation.isPending}
+						>
+							<option>Flat</option>
+							<option>Conical</option>
+						</select>
+					</label>
+				</div>
+				<div className="form-field">
+					<label>
+						Ideal For:
+						<select
+							value={newGrinder.idealFor}
+							onChange={(e) =>
+								setNewGrinder({
+									...newGrinder,
+									idealFor: e.target.value,
+								})
+							}
+							disabled={createMutation.isPending}
+						>
+							<option>All</option>
+							<option>Pour Over</option>
+							<option>Espresso</option>
+						</select>
+					</label>
+				</div>
+				<button type="submit" disabled={createMutation.isPending}>
+					{createMutation.isPending ? "Adding..." : "Add Grinder"}
+				</button>
+			</form>
 
-				<hr style={{ margin: "20px 0" }} />
+			<hr style={{ margin: "20px 0" }} />
 
-				<ul>
-					{grinders.map((grinder) => (
-						<li
-							key={grinder.id}
+			<ul>
+				{grinders.map((grinder) => (
+					<li
+						key={grinder.id}
+						style={{
+							marginBottom: "15px",
+							display: "flex",
+							alignItems: "center",
+							gap: "10px",
+						}}
+					>
+						<Link
+							to={`/grinders/${grinder.id}`}
+							style={{ flex: 1 }}
+						>
+							{grinder.name} - {grinder.burr_size}&quot;{" "}
+							{grinder.burr_type}
+						</Link>
+						<button
+							onClick={(e) => handleDelete(e, grinder.id)}
+							disabled={deletingIds.has(grinder.id)}
 							style={{
-								marginBottom: "15px",
-								display: "flex",
-								alignItems: "center",
-								gap: "10px",
+								backgroundColor: "#dc3545",
+								color: "white",
+								border: "none",
+								padding: "5px 10px",
+								borderRadius: "4px",
+								cursor: deletingIds.has(grinder.id)
+									? "not-allowed"
+									: "pointer",
+								minWidth: "70px",
+								opacity: deletingIds.has(grinder.id) ? 0.7 : 1,
 							}}
 						>
-							<Link
-								to={`/grinders/${grinder.id}`}
-								style={{ flex: 1 }}
-							>
-								{grinder.name} - {grinder.burr_size}&quot;{" "}
-								{grinder.burr_type}
-							</Link>
-							<button
-								onClick={(e) => handleDelete(e, grinder.id)}
-								disabled={deletingIds.has(grinder.id)}
-								style={{
-									backgroundColor: "#dc3545",
-									color: "white",
-									border: "none",
-									padding: "5px 10px",
-									borderRadius: "4px",
-									cursor: deletingIds.has(grinder.id)
-										? "not-allowed"
-										: "pointer",
-									minWidth: "70px",
-									opacity: deletingIds.has(grinder.id)
-										? 0.7
-										: 1,
-								}}
-							>
-								{deletingIds.has(grinder.id)
-									? "Deleting..."
-									: "Delete"}
-							</button>
-						</li>
-					))}
-				</ul>
-			</main>
+							{deletingIds.has(grinder.id)
+								? "Deleting..."
+								: "Delete"}
+						</button>
+					</li>
+				))}
+			</ul>
 		</>
 	);
 }
