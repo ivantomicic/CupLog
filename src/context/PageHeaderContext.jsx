@@ -9,6 +9,7 @@ export function PageHeaderProvider({ children }) {
 		buttonTarget: null,
 		buttonComponent: null,
 		buttonIcon: null,
+		actionComponent: null,
 	});
 
 	const updateHeader = (newState) => {

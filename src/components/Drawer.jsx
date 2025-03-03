@@ -1,16 +1,16 @@
 // import { Drawer } from "vaul";
 
 import {
-	Drawer,
+	Drawer as DrawerComponent,
 	DrawerContent,
 	DrawerHeader,
 	DrawerBody,
 	DrawerFooter,
 } from "@heroui/drawer";
 
-function CustomDrawer({ isOpen, onClose, title, children }) {
+function Drawer({ isOpen, onClose, title, children }) {
 	return (
-		<Drawer
+		<DrawerComponent
 			isOpen={isOpen}
 			onOpenChange={onClose}
 			placement="bottom"
@@ -29,8 +29,8 @@ function CustomDrawer({ isOpen, onClose, title, children }) {
 					</>
 				)}
 			</DrawerContent>
-		</Drawer>
+		</DrawerComponent>
 	);
 }
 
-export default CustomDrawer;
+export default Drawer;

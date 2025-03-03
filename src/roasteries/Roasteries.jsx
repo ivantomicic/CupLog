@@ -18,9 +18,6 @@ export default function Roasteries() {
 		logo: null,
 	});
 
-	// Update the page header
-	useUpdatePageHeader("Roasteries");
-
 	// Query for fetching brewers with caching
 	const {
 		data: roasteries = [],

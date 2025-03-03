@@ -13,8 +13,9 @@ import { analyzeBrewData } from "../utils/openai";
 import Select from "../components/Select";
 import Input from "../components/Input";
 import DatePicker from "../components/DatePicker";
-
-import { Button, ButtonGroup } from "@heroui/react";
+import Drawer from "../components/Drawer";
+import { Button } from "@heroui/react";
+import { FiPlusCircle } from "react-icons/fi";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -163,209 +164,240 @@ export default function NewBrew() {
 
 	const selectedBeans = beans.find((b) => b.id === newBrew.beansId);
 
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+	const handleDrawerClose = () => {
+		setIsDrawerOpen(false);
+	};
+
 	return (
 		<>
-			<form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-				<Select
-					label="Select Beans"
-					value={newBrew.beansId}
-					options={beans.map((beans) => {
-						const closestRoastDate =
-							beans.roast_dates?.length > 0
-								? getClosestRoastDate(beans.roast_dates)
-								: null;
-						return {
-							key: beans.id,
-							label: beans.name,
-						};
-					})}
-					onChange={handleBeansChange}
-				/>
+			<Button
+				color="primary"
+				startContent={<FiPlusCircle />}
+				onPress={() => setIsDrawerOpen(true)}
+			>
+				Log
+			</Button>
 
-				{selectedBeans &&
-					selectedBeans.roast_dates &&
-					selectedBeans.roast_dates.length > 0 && (
-						<Select
-							label="Roast Date"
-							value={newBrew.roastDate}
-							options={[...selectedBeans.roast_dates]
-								.sort(
-									(a, b) =>
-										Math.abs(new Date() - new Date(a)) -
-										Math.abs(new Date() - new Date(b))
-								)
-								.map((roastDate) => {
-									const isClosest =
-										roastDate ===
-										getClosestRoastDate(
-											selectedBeans.roast_dates
-										);
-									return {
-										key: roastDate,
-										label:
-											new Date(roastDate)
-												.toLocaleDateString("en-GB", {
-													day: "2-digit",
-													month: "2-digit",
-													year: "numeric",
-												})
-												.replace(/\//g, " / ") +
-											(isClosest ? " (Freshest)" : ""),
-									};
-								})}
-							onChange={handleBeansChange}
-						/>
-					)}
-
-				<DatePicker
-					label="Date & Time"
-					allowTimePicker
-					onChange={(x) => {
-						setNewBrew({
-							...newBrew,
-							date: x,
-						});
-					}}
-				/>
-
-				<Select
-					label="Grinders"
-					value={newBrew.grinderId}
-					options={grinders.map((grinder) => ({
-						key: grinder.id,
-						label: grinder.name,
-					}))}
-					onChange={(e) =>
-						setNewBrew({
-							...newBrew,
-							grinderId: e.target.value,
-						})
-					}
-					required
-					disabled={createMutation.isPending}
-				/>
-
-				<Input
-					label="Grind Size"
-					value={newBrew.grindSize}
-					suffix="mm"
-					onChange={(e) =>
-						setNewBrew({ ...newBrew, grindSize: e.target.value })
-					}
-					type="number"
-					pattern="[0-9]*"
-					inputMode="decimal"
-					disabled={createMutation.isPending}
-				/>
-
-				<Select
-					label="Brewer"
-					value={newBrew.brewerId}
-					options={brewers.map((brewer) => ({
-						key: brewer.id,
-						label: brewer.name,
-					}))}
-					onChange={(e) =>
-						setNewBrew({
-							...newBrew,
-							brewerId: e.target.value,
-						})
-					}
-					required
-					disabled={createMutation.isPending}
-				/>
-
-				<Input
-					label="Brew Time"
-					value={newBrew.brewTime}
-					suffix="sec"
-					onChange={(e) =>
-						setNewBrew({
-							...newBrew,
-							brewTime: e.target.value,
-						})
-					}
-					type="number"
-					pattern="[0-9]*"
-					disabled={createMutation.isPending}
-				/>
-
-				<Input
-					label="Dose"
-					value={newBrew.dose}
-					suffix="g"
-					onChange={(e) =>
-						setNewBrew({ ...newBrew, dose: e.target.value })
-					}
-					type="number"
-					pattern="[0-9]*"
-					disabled={createMutation.isPending}
-				/>
-
-				<Input
-					label="Yield"
-					value={newBrew.yield}
-					suffix="g"
-					onChange={(e) =>
-						setNewBrew({ ...newBrew, yield: e.target.value })
-					}
-					type="number"
-					pattern="[0-9]*"
-					disabled={createMutation.isPending}
-				/>
-
-				<div
-					className="form-field full-width"
-					style={{ display: "none" }}
+			<Drawer
+				isOpen={isDrawerOpen}
+				onClose={handleDrawerClose}
+				title="Log New Brew"
+			>
+				<form
+					onSubmit={handleSubmit}
+					className="grid grid-cols-2 gap-4"
 				>
-					<label>Notes:</label>
-					<textarea
-						value={newBrew.notes}
+					<Select
+						label="Select Beans"
+						value={newBrew.beansId}
+						options={beans.map((beans) => {
+							const closestRoastDate =
+								beans.roast_dates?.length > 0
+									? getClosestRoastDate(beans.roast_dates)
+									: null;
+							return {
+								key: beans.id,
+								label: beans.name,
+							};
+						})}
+						onChange={handleBeansChange}
+					/>
+
+					{selectedBeans &&
+						selectedBeans.roast_dates &&
+						selectedBeans.roast_dates.length > 0 && (
+							<Select
+								label="Roast Date"
+								value={newBrew.roastDate}
+								options={[...selectedBeans.roast_dates]
+									.sort(
+										(a, b) =>
+											Math.abs(new Date() - new Date(a)) -
+											Math.abs(new Date() - new Date(b))
+									)
+									.map((roastDate) => {
+										const isClosest =
+											roastDate ===
+											getClosestRoastDate(
+												selectedBeans.roast_dates
+											);
+										return {
+											key: roastDate,
+											label:
+												new Date(roastDate)
+													.toLocaleDateString(
+														"en-GB",
+														{
+															day: "2-digit",
+															month: "2-digit",
+															year: "numeric",
+														}
+													)
+													.replace(/\//g, " / ") +
+												(isClosest
+													? " (Freshest)"
+													: ""),
+										};
+									})}
+								onChange={handleBeansChange}
+							/>
+						)}
+
+					<DatePicker
+						label="Date & Time"
+						allowTimePicker
+						onChange={(x) => {
+							setNewBrew({
+								...newBrew,
+								date: x,
+							});
+						}}
+					/>
+
+					<Select
+						label="Grinders"
+						value={newBrew.grinderId}
+						options={grinders.map((grinder) => ({
+							key: grinder.id,
+							label: grinder.name,
+						}))}
 						onChange={(e) =>
 							setNewBrew({
 								...newBrew,
-								notes: e.target.value,
+								grinderId: e.target.value,
 							})
 						}
-						rows="4"
+						required
 						disabled={createMutation.isPending}
 					/>
-				</div>
 
-				<div
-					className="form-field full-width"
-					style={{ display: "none" }}
-				>
-					<label>
-						Image:
-						<input
-							type="file"
-							accept="image/*"
-							onChange={handleImageChange}
+					<Input
+						label="Grind Size"
+						value={newBrew.grindSize}
+						suffix="mm"
+						onChange={(e) =>
+							setNewBrew({
+								...newBrew,
+								grindSize: e.target.value,
+							})
+						}
+						type="number"
+						pattern="[0-9]*"
+						inputMode="decimal"
+						disabled={createMutation.isPending}
+					/>
+
+					<Select
+						label="Brewer"
+						value={newBrew.brewerId}
+						options={brewers.map((brewer) => ({
+							key: brewer.id,
+							label: brewer.name,
+						}))}
+						onChange={(e) =>
+							setNewBrew({
+								...newBrew,
+								brewerId: e.target.value,
+							})
+						}
+						required
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Brew Time"
+						value={newBrew.brewTime}
+						suffix="sec"
+						onChange={(e) =>
+							setNewBrew({
+								...newBrew,
+								brewTime: e.target.value,
+							})
+						}
+						type="number"
+						pattern="[0-9]*"
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Dose"
+						value={newBrew.dose}
+						suffix="g"
+						onChange={(e) =>
+							setNewBrew({ ...newBrew, dose: e.target.value })
+						}
+						type="number"
+						pattern="[0-9]*"
+						disabled={createMutation.isPending}
+					/>
+
+					<Input
+						label="Yield"
+						value={newBrew.yield}
+						suffix="g"
+						onChange={(e) =>
+							setNewBrew({ ...newBrew, yield: e.target.value })
+						}
+						type="number"
+						pattern="[0-9]*"
+						disabled={createMutation.isPending}
+					/>
+
+					<div
+						className="form-field full-width"
+						style={{ display: "none" }}
+					>
+						<label>Notes:</label>
+						<textarea
+							value={newBrew.notes}
+							onChange={(e) =>
+								setNewBrew({
+									...newBrew,
+									notes: e.target.value,
+								})
+							}
+							rows="4"
 							disabled={createMutation.isPending}
 						/>
-					</label>
-				</div>
+					</div>
 
-				<Button
-					color="primary"
-					type="submit"
-					disabled={createMutation.isPending}
-					className="col-span-2"
-				>
-					{createMutation.isPending
-						? ENABLE_AI_ANALYSIS
-							? "Logging Brew and Analyzing..."
-							: "Logging Brew..."
-						: "Log Brew"}
-				</Button>
-			</form>
-			{createMutation.isPending && ENABLE_AI_ANALYSIS && (
-				<div>
-					<h3>AI Analysis in Progress</h3>
-					<p>Analyzing your brew data... Please wait.</p>
-				</div>
-			)}
+					<div
+						className="form-field full-width"
+						style={{ display: "none" }}
+					>
+						<label>
+							Image:
+							<input
+								type="file"
+								accept="image/*"
+								onChange={handleImageChange}
+								disabled={createMutation.isPending}
+							/>
+						</label>
+					</div>
+
+					<Button
+						color="primary"
+						type="submit"
+						disabled={createMutation.isPending}
+						className="col-span-2"
+					>
+						{createMutation.isPending
+							? ENABLE_AI_ANALYSIS
+								? "Logging Brew and Analyzing..."
+								: "Logging Brew..."
+							: "Log Brew"}
+					</Button>
+				</form>
+				{createMutation.isPending && ENABLE_AI_ANALYSIS && (
+					<div>
+						<h3>AI Analysis in Progress</h3>
+						<p>Analyzing your brew data... Please wait.</p>
+					</div>
+				)}
+			</Drawer>
 		</>
 	);
 }

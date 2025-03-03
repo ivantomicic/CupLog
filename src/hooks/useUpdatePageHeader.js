@@ -7,6 +7,7 @@ export default function useUpdatePageHeader({
 	buttonComponent = null,
 	buttonComponentTitle = null,
 	buttonIcon = null,
+	actionComponent = null,
 }) {
 	const { updateHeader } = usePageHeader();
 
@@ -17,6 +18,7 @@ export default function useUpdatePageHeader({
 			buttonComponent,
 			buttonComponentTitle,
 			buttonIcon,
+			actionComponent,
 		});
 	}, [
 		title,
@@ -25,5 +27,6 @@ export default function useUpdatePageHeader({
 		buttonComponentTitle,
 		buttonIcon,
 		updateHeader,
+		actionComponent,
 	]);
 }

@@ -13,6 +13,7 @@ function Home() {
 		title: "Latest Brews",
 		buttonComponent: NewBrew,
 		buttonComponentTitle: "Log New Brew",
+		actionComponent: NewBrew,
 	});
 
 	// Query for brews

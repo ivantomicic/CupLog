@@ -17,7 +17,8 @@ export default function Equipment() {
 					<Tabs
 						aria-label="Options"
 						classNames={{
-							tabList: "w-full",
+							base: "mb-8",
+							tabList: "w-full ",
 							tab: "w-full",
 						}}
 					>
