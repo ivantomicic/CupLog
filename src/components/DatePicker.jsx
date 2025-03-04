@@ -52,6 +52,11 @@ function DatePicker({
 					console.log(isoDate);
 					onChange(isoDate);
 				}}
+				popoverProps={{
+					classNames: {
+						content: "pointer-events-auto",
+					},
+				}}
 				granularity={allowTimePicker ? "minute" : "day"}
 				value={value ? parseDate(value) : undefined}
 				defaultValue={!value ? now(getLocalTimeZone()) : undefined}
