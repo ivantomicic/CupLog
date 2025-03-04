@@ -55,17 +55,17 @@
 			opacity: 0.5;
 		}
 	}
-}
 
-.logo {
-	width: 6rem;
-	height: 6rem;
+	.logo {
+		width: 6rem;
+		height: 6rem;
 
-	&-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-bottom: 1rem;
+		&-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 1rem;
+		}
 	}
 }
 

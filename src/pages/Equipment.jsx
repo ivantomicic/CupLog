@@ -1,4 +1,4 @@
-import { Tabs, Tab, Card, CardBody } from "@heroui/react";
+import { Tabs, Tab } from "@heroui/react";
 import Brewers from "../brewers/Brewers";
 import Grinders from "../grinders/Grinders";
 
