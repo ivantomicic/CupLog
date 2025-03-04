@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useCallback } from "react";
 import PropTypes from "prop-types";
 
 const PageHeaderContext = createContext();
@@ -12,7 +12,7 @@ export function PageHeaderProvider({ children }) {
 		actionComponent: null,
 	});
 
-	const updateHeader = (newState) => {
+	const updateHeader = useCallback((newState) => {
 		setHeaderState((prevState) => {
 			// Check if the new state is actually different from the previous state
 			const hasChanges = Object.keys(newState).some(
@@ -22,7 +22,7 @@ export function PageHeaderProvider({ children }) {
 			// Only update if there are changes
 			return hasChanges ? { ...prevState, ...newState } : prevState;
 		});
-	};
+	}, []);
 
 	return (
 		<PageHeaderContext.Provider value={{ headerState, updateHeader }}>

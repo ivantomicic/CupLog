@@ -20,13 +20,5 @@ export default function useUpdatePageHeader({
 			buttonIcon,
 			actionComponent,
 		});
-	}, [
-		title,
-		buttonTarget,
-		buttonComponent,
-		buttonComponentTitle,
-		buttonIcon,
-		updateHeader,
-		actionComponent,
-	]);
+	}, [title, updateHeader]);
 }
