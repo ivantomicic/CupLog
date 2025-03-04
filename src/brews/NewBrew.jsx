@@ -254,6 +254,7 @@ export default function NewBrew() {
 								date: x,
 							});
 						}}
+						className="col-span-2"
 					/>
 
 					<Select

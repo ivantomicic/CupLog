@@ -43,7 +43,7 @@ export default function Beans() {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+		<div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
 			{beans.map((bean) => {
 				const closestRoastDate = getClosestRoastDate(bean.roast_dates);
 				return (

@@ -33,7 +33,13 @@ const convertDateObjectToISOTimestamp = (
 	}
 };
 
-function DatePicker({ value, onChange, label, allowTimePicker = false }) {
+function DatePicker({
+	value,
+	onChange,
+	label,
+	allowTimePicker = false,
+	...props
+}) {
 	return (
 		<I18nProvider locale="en-GB">
 			<DatePickerComponent
@@ -49,6 +55,7 @@ function DatePicker({ value, onChange, label, allowTimePicker = false }) {
 				granularity={allowTimePicker ? "minute" : "day"}
 				value={value ? parseDate(value) : undefined}
 				defaultValue={!value ? now(getLocalTimeZone()) : undefined}
+				{...props}
 			/>
 		</I18nProvider>
 	);

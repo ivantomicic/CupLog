@@ -81,3 +81,7 @@
 		}
 	}
 }
+
+div[data-slot="popover"] {
+	pointer-events: all !important;
+}
