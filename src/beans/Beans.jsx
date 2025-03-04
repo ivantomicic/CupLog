@@ -1,17 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Loader from "../misc/Loader";
-import {
-	getBeans,
-	createBean,
-	deleteBean,
-	getRoasteries,
-} from "../utils/supabase";
-import Select from "../components/Select";
-import Input from "../components/Input";
-import DatePicker from "../components/DatePicker";
-import { Card, CardHeader, CardBody, CardFooter } from "@heroui/react";
+import { getBeans } from "../utils/supabase";
+import { Card, CardBody } from "@heroui/react";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {

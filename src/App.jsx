@@ -6,6 +6,7 @@ import Brewers from "./brewers/Brewers";
 import Grinders from "./grinders/Grinders";
 import Beans from "./beans/Beans";
 import Roasteries from "./roasteries/Roasteries";
+import RoasteryDetails from "./roasteries/RoasteryDetails";
 import BrewDetails from "./brews/BrewDetails";
 import BeansDetails from "./beans/BeansDetails";
 import GrinderDetails from "./grinders/GrinderDetails";
@@ -60,6 +61,7 @@ function PrivateRoutes() {
 				<Route path="/grinders/:id" element={<GrinderDetails />} />
 				<Route path="/beans" element={<Beans />} />
 				<Route path="/roasteries" element={<Roasteries />} />
+				<Route path="/roasteries/:id" element={<RoasteryDetails />} />
 				<Route path="/beans/:id" element={<BeansDetails />} />
 				<Route path="/brews/new" element={<NewBrew />} />
 				<Route path="/brews/:id" element={<BrewDetails />} />

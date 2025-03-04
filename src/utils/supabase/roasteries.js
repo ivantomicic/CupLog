@@ -48,3 +48,17 @@ export const deleteRoastery = async (id) => {
 
 	if (error) throw error;
 };
+
+export const updateRoastery = async (id, updates) => {
+	const userId = await getUserId();
+	const { data, error } = await supabase
+		.from("roasteries")
+		.update(updates)
+		.eq("id", id)
+		.eq("user_id", userId)
+		.select()
+		.single();
+
+	if (error) throw error;
+	return data;
+};

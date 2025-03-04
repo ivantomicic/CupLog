@@ -5,6 +5,7 @@ import { getBeans, createBean, getRoasteries } from "../utils/supabase";
 import Select from "../components/Select";
 import Input from "../components/Input";
 import DatePicker from "../components/DatePicker";
+import { Button } from "@heroui/react";
 
 export default function NewBeans() {
 	const queryClient = useQueryClient();
@@ -203,11 +204,14 @@ export default function NewBeans() {
 				}}
 			/>
 
-			<div className="form-field full-width">
-				<button type="submit" disabled={createMutation.isPending}>
-					{createMutation.isPending ? "Adding..." : "Add Bean"}
-				</button>
-			</div>
+			<Button
+				type="submit"
+				disabled={createMutation.isPending}
+				className="col-span-2"
+				color="primary"
+			>
+				{createMutation.isPending ? "Adding..." : "Add Bean"}
+			</Button>
 		</form>
 	);
 }
