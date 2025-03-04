@@ -1,13 +1,40 @@
 import { Tabs, Tab } from "@heroui/react";
 import Brewers from "../brewers/Brewers";
+import { PiCoffeeBeanFill } from "react-icons/pi";
+import LogDropdown from "../components/LogDropdown";
 import Grinders from "../grinders/Grinders";
+import NewGrinder from "../grinders/NewGrinder";
+import NewBrewer from "../brewers/NewBrewer";
 
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
+
+const dropdownItems = [
+	{
+		key: "newGrinder",
+		title: "New Grinder",
+		description: "Add new grinder",
+		icon: <PiCoffeeBeanFill />,
+		component: <NewGrinder />,
+	},
+	{
+		key: "newBrewer",
+		title: "New Brewer",
+		description: "Add new brewer",
+		icon: <PiCoffeeBeanFill />,
+		component: <NewBrewer />,
+	},
+];
 
 export default function Equipment() {
 	// Update the page header
 	useUpdatePageHeader({
 		title: "Equipment",
+		actionComponent: (
+			<LogDropdown
+				buttonLabel="Log New Equipment"
+				items={dropdownItems}
+			/>
+		),
 	});
 
 	return (

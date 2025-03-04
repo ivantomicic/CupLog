@@ -1,8 +1,7 @@
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import { usePageHeader } from "../context/PageHeaderContext";
-import { useEffect } from "react";
-import React from "react";
 
 // Animation variants for the title
 const titleVariants = {
@@ -48,7 +47,7 @@ export default function PageHeader() {
 				</AnimatePresence>
 			</div>
 
-			{actionComponent && React.createElement(actionComponent)}
+			{actionComponent}
 		</div>
 	);
 }

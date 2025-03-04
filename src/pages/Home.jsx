@@ -11,9 +11,7 @@ function Home() {
 	// Update the page header
 	useUpdatePageHeader({
 		title: "Latest Brews",
-		buttonComponent: NewBrew,
-		buttonComponentTitle: "Log New Brew",
-		actionComponent: NewBrew,
+		actionComponent: <NewBrew />,
 	});
 
 	// Query for brews

@@ -1,30 +1,14 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCurrentUser, createBrewer, getBrewers } from "../utils/supabase";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCurrentUser, createBrewer } from "../utils/supabase";
 import Loader from "../misc/Loader";
-import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
-export default function Brewers() {
+export default function NewBrewer() {
 	const queryClient = useQueryClient();
 	const [newBrewer, setNewBrewer] = useState({
 		name: "",
 		type: "Pour Over",
 		image: null,
-	});
-
-	// Update the page header
-	useUpdatePageHeader("Brewers", "/brewers/new");
-
-	// Query for fetching brewers with caching
-	const {
-		data: brewers = [],
-		error,
-		isInitialLoading,
-	} = useQuery({
-		queryKey: ["brewers"],
-		queryFn: getBrewers,
-		staleTime: 30000, // Consider data fresh for 30 seconds
-		cacheTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
 	});
 
 	// Mutation for creating brewers
@@ -65,9 +49,6 @@ export default function Brewers() {
 			console.error("Failed to create brewer:", err);
 		}
 	};
-
-	if (isInitialLoading) return <Loader />;
-	if (error) return <div>Error: {error.message}</div>;
 
 	return (
 		<form onSubmit={handleSubmit}>

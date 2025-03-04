@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "../misc/Loader";
-import { getGrinders, createGrinder } from "../utils/supabase";
+import { createGrinder } from "../utils/supabase";
 
 export default function Grinders() {
 	const queryClient = useQueryClient();
@@ -10,18 +10,6 @@ export default function Grinders() {
 		burrSize: "",
 		burrType: "",
 		idealFor: "",
-	});
-
-	// Query for fetching grinders with caching
-	const {
-		data: grinders = [],
-		error,
-		isInitialLoading,
-	} = useQuery({
-		queryKey: ["grinders"],
-		queryFn: getGrinders,
-		staleTime: 30000, // Consider data fresh for 30 seconds
-		cacheTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
 	});
 
 	// Mutation for creating grinders
@@ -55,9 +43,6 @@ export default function Grinders() {
 			console.error("Failed to create grinder:", err);
 		}
 	};
-
-	if (isInitialLoading) return <Loader />;
-	if (error) return <div>Error: {error.message}</div>;
 
 	return (
 		<form onSubmit={handleSubmit}>
