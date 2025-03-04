@@ -37,26 +37,24 @@ export default function Coffee() {
 	});
 
 	return (
-		<>
-			<main className="main-content">
-				<div className="flex w-full flex-col">
-					<Tabs
-						aria-label="Options"
-						classNames={{
-							base: "mb-4",
-							tabList: "w-full",
-							tab: "w-full",
-						}}
-					>
-						<Tab key="beans" title="Beans">
-							<Beans />
-						</Tab>
-						<Tab key="roasteries" title="Roasteries">
-							<Roasteries />
-						</Tab>
-					</Tabs>
-				</div>
-			</main>
-		</>
+		<main className="main-content">
+			<div className="flex w-full flex-col">
+				<Tabs
+					aria-label="Options"
+					classNames={{
+						base: "mb-4",
+						tabList: "w-full",
+						tab: "w-full",
+					}}
+				>
+					<Tab key="beans" title="Beans">
+						<Beans />
+					</Tab>
+					<Tab key="roasteries" title="Roasteries">
+						<Roasteries />
+					</Tab>
+				</Tabs>
+			</div>
+		</main>
 	);
 }

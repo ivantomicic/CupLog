@@ -2,12 +2,8 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getBrewers } from "../utils/supabase";
 import Loader from "../misc/Loader";
-import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 
 export default function Brewers() {
-	// Update the page header
-	useUpdatePageHeader("Brewers", "/brewers/new");
-
 	// Query for fetching brewers with caching
 	const {
 		data: brewers = [],

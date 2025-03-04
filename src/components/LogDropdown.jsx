@@ -35,7 +35,7 @@ function LogDropdown({ buttonLabel, items }) {
 								key={item.key}
 								description={item.description}
 								startContent={item.icon}
-								onClick={() => setOpenDrawerKey(item.key)}
+								onPress={() => setOpenDrawerKey(item.key)}
 							>
 								{item.title}
 							</DropdownItem>
