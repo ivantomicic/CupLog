@@ -1,6 +1,6 @@
 import { Drawer as DrawerComponent } from "vaul";
 
-function Drawer({ isOpen, onClose, title, children }) {
+export const Drawer = ({ isOpen, onClose, title, children }) => {
 	return (
 		<DrawerComponent.Root open={isOpen} onOpenChange={onClose}>
 			<DrawerComponent.Portal>
@@ -22,6 +22,4 @@ function Drawer({ isOpen, onClose, title, children }) {
 			</DrawerComponent.Portal>
 		</DrawerComponent.Root>
 	);
-}
-
-export default Drawer;
+};

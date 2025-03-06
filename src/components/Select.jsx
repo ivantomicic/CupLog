@@ -3,12 +3,13 @@ import {
 	SelectItem as SelectItemComponent,
 } from "@heroui/react";
 
-function Select({ options, value, onChange, label }) {
+export const Select = ({ options, value, onChange, label }) => {
 	return (
 		<SelectComponent
 			label={label}
 			defaultSelectedKeys={[value]}
 			items={options}
+			size="sm"
 			onChange={onChange}
 			popoverProps={{
 				classNames: {
@@ -19,5 +20,4 @@ function Select({ options, value, onChange, label }) {
 			{(item) => <SelectItemComponent>{item.label}</SelectItemComponent>}
 		</SelectComponent>
 	);
-}
-export default Select;
+};

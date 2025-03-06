@@ -18,6 +18,15 @@ body {
 	margin-top: 70px;
 	padding: var(--spacing-2);
 
+	&.w-content-inside {
+		margin-top: 0;
+		padding: var(--spacing-2);
+
+		.inside-content {
+			padding: var(--spacing-2);
+		}
+	}
+
 	@media (min-width: 768px) {
 		margin-left: 240px; // Space for desktop nav
 		padding: var(--spacing-4);

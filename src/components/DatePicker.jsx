@@ -1,6 +1,7 @@
 import { DatePicker as DatePickerComponent } from "@heroui/react";
 import { I18nProvider } from "@react-aria/i18n";
 import { parseDate, now, getLocalTimeZone } from "@internationalized/date";
+import PropTypes from "prop-types";
 
 // const date = new Date(isoDate);
 
@@ -33,17 +34,18 @@ const convertDateObjectToISOTimestamp = (
 	}
 };
 
-function DatePicker({
+export const DatePicker = ({
 	value,
 	onChange,
 	label,
 	allowTimePicker = false,
 	...props
-}) {
+}) => {
 	return (
 		<I18nProvider locale="en-GB">
 			<DatePickerComponent
 				label={label}
+				size="sm"
 				onChange={(x) => {
 					const isoDate = convertDateObjectToISOTimestamp(
 						x,
@@ -64,5 +66,11 @@ function DatePicker({
 			/>
 		</I18nProvider>
 	);
-}
-export default DatePicker;
+};
+
+DatePicker.propTypes = {
+	value: PropTypes.string,
+	onChange: PropTypes.func.isRequired,
+	label: PropTypes.string.isRequired,
+	allowTimePicker: PropTypes.bool,
+};

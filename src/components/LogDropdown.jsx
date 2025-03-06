@@ -8,9 +8,9 @@ import {
 	DropdownMenu,
 	DropdownItem,
 } from "@heroui/react";
-import Drawer from "./Drawer";
+import { Drawer } from "@cuplog/components";
 
-function LogDropdown({ buttonLabel, items }) {
+export const LogDropdown = ({ buttonLabel, items }) => {
 	const [openDrawerKey, setOpenDrawerKey] = useState(null);
 
 	const handleDrawerClose = () => {
@@ -56,7 +56,7 @@ function LogDropdown({ buttonLabel, items }) {
 			))}
 		</>
 	);
-}
+};
 
 LogDropdown.propTypes = {
 	buttonLabel: PropTypes.string.isRequired,
@@ -70,5 +70,3 @@ LogDropdown.propTypes = {
 		})
 	).isRequired,
 };
-
-export default LogDropdown;

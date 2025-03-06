@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loader from "../misc/Loader";
 import { getBeans } from "../utils/supabase";
 import { Card, CardBody } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Helper function to get the closest roast date to today
 const getClosestRoastDate = (roastDates) => {
@@ -15,6 +16,11 @@ const getClosestRoastDate = (roastDates) => {
 		const currentDiff = Math.abs(today - currentDate);
 		return currentDiff < closestDiff ? current : closest;
 	});
+};
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 20 },
+	visible: { opacity: 1, y: 0 },
 };
 
 export default function Beans() {
@@ -35,30 +41,48 @@ export default function Beans() {
 
 	return (
 		<div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-			{beans.map((bean) => {
-				const closestRoastDate = getClosestRoastDate(bean.roast_dates);
-				return (
-					<Card key={bean.id}>
-						<Link to={`/beans/${bean.id}`} className="bean-details">
-							<CardBody>
-								<h3>{bean.name}</h3>
-								<p>
-									{bean.country}, {bean.region}
-								</p>
-								<p className="roast-type">{bean.roast} roast</p>
-								{closestRoastDate && (
-									<p className="roast-date">
-										Latest roast:{" "}
-										{new Date(
-											closestRoastDate
-										).toLocaleDateString()}
-									</p>
-								)}
-							</CardBody>
-						</Link>
-					</Card>
-				);
-			})}
+			<AnimatePresence>
+				{beans.map((bean, index) => {
+					const closestRoastDate = getClosestRoastDate(
+						bean.roast_dates
+					);
+					return (
+						<motion.div
+							key={bean.id}
+							variants={itemVariants}
+							initial="hidden"
+							animate="visible"
+							exit={{ opacity: 0, y: -20 }}
+							transition={{ duration: 0.5, delay: index * 0.15 }}
+						>
+							<Card>
+								<Link
+									to={`/beans/${bean.id}`}
+									className="bean-details"
+								>
+									<CardBody>
+										<h3>{bean.name}</h3>
+										<p>
+											{bean.country}, {bean.region}
+										</p>
+										<p className="roast-type">
+											{bean.roast} roast
+										</p>
+										{closestRoastDate && (
+											<p className="roast-date">
+												Latest roast:{" "}
+												{new Date(
+													closestRoastDate
+												).toLocaleDateString()}
+											</p>
+										)}
+									</CardBody>
+								</Link>
+							</Card>
+						</motion.div>
+					);
+				})}
+			</AnimatePresence>
 		</div>
 	);
 }

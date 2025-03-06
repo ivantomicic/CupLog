@@ -1,7 +1,7 @@
 import { Tabs, Tab } from "@heroui/react";
 import Brewers from "../brewers/Brewers";
 import { PiCoffeeBeanFill } from "react-icons/pi";
-import LogDropdown from "../components/LogDropdown";
+import { LogDropdown } from "@cuplog/components";
 import Grinders from "../grinders/Grinders";
 import NewGrinder from "../grinders/NewGrinder";
 import NewBrewer from "../brewers/NewBrewer";

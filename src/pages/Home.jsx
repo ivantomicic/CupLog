@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBrews, deleteBrew } from "../utils/supabase";
-import Loader from "../misc/Loader";
-import NewBrew from "../brews/NewBrew";
-import CoffeeCard from "../misc/CoffeeCard";
-import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
+import { getBrews, deleteBrew } from "@cuplog/utils/supabase";
+import Loader from "@cuplog/misc/Loader";
+import NewBrew from "@cuplog/brews/NewBrew";
+import CoffeeCard from "@cuplog/misc/CoffeeCard";
+import useUpdatePageHeader from "@cuplog/hooks/useUpdatePageHeader";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Home() {
 	const queryClient = useQueryClient();
@@ -45,27 +46,39 @@ function Home() {
 				{brews.length === 0 ? (
 					<div>No coffee logs available.</div>
 				) : (
-					<ul className="coffee-cards">
-						{brews.map((brew) => (
-							<CoffeeCard
-								key={brew.id}
-								brew={brew}
-								onDelete={async (brewId) => {
-									try {
-										await deleteMutation.mutateAsync(
-											brewId
-										);
-									} catch (err) {
-										console.error(
-											"Failed to delete brew:",
-											err
-										);
-									}
-								}}
-								isDeleting={deleteMutation.isPending}
-							/>
-						))}
-					</ul>
+					<div className="coffee-cards">
+						<AnimatePresence>
+							{brews.map((brew) => (
+								<motion.div
+									key={brew.id}
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -20 }}
+									transition={{
+										duration: 0.5,
+										delay: brew.id * 0.1,
+									}}
+								>
+									<CoffeeCard
+										brew={brew}
+										onDelete={async (brewId) => {
+											try {
+												await deleteMutation.mutateAsync(
+													brewId
+												);
+											} catch (err) {
+												console.error(
+													"Failed to delete brew:",
+													err
+												);
+											}
+										}}
+										isDeleting={deleteMutation.isPending}
+									/>
+								</motion.div>
+							))}
+						</AnimatePresence>
+					</div>
 				)}
 			</main>
 		</>

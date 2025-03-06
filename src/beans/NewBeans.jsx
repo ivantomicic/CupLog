@@ -2,10 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "../misc/Loader";
 import { getBeans, createBean, getRoasteries } from "../utils/supabase";
-import Select from "../components/Select";
-import Input from "../components/Input";
-import DatePicker from "../components/DatePicker";
-import { Button } from "@heroui/react";
+import { Button, DatePicker, Input, Select } from "@cuplog/components";
 
 export default function NewBeans() {
 	const queryClient = useQueryClient();

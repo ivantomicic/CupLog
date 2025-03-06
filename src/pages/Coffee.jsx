@@ -2,7 +2,7 @@ import { Tabs, Tab } from "@heroui/react";
 import Beans from "../beans/Beans";
 import Roasteries from "../roasteries/Roasteries";
 import { PiCoffeeBeanFill } from "react-icons/pi";
-import LogDropdown from "../components/LogDropdown";
+import { LogDropdown } from "@cuplog/components";
 import useUpdatePageHeader from "../hooks/useUpdatePageHeader";
 import NewBeans from "../beans/NewBeans";
 import NewRoastery from "../roasteries/NewRoastery";
@@ -29,10 +29,7 @@ export default function Coffee() {
 	useUpdatePageHeader({
 		title: "Beans & Roasteries",
 		actionComponent: (
-			<LogDropdown
-				buttonLabel="Log New Beans or Roastery"
-				items={dropdownItems}
-			/>
+			<LogDropdown buttonLabel="Log New" items={dropdownItems} />
 		),
 	});
 

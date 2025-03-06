@@ -10,10 +10,7 @@ import {
 	getBrews,
 } from "../utils/supabase";
 import { analyzeBrewData } from "../utils/openai";
-import Select from "../components/Select";
-import Input from "../components/Input";
-import DatePicker from "../components/DatePicker";
-import Drawer from "../components/Drawer";
+import { Input, Select, DatePicker, Drawer } from "@cuplog/components";
 import { Button } from "@heroui/react";
 import { FiPlusCircle } from "react-icons/fi";
 
@@ -50,6 +47,8 @@ export default function NewBrew() {
 		aiSuggestions: null,
 		roastDate: "",
 	});
+
+	console.log(newBrew);
 
 	// Update the page header
 	// useUpdatePageHeader("Log New Brew");
@@ -143,6 +142,14 @@ export default function NewBrew() {
 			...prev,
 			beansId,
 			roastDate: selectedRoastDate,
+		}));
+	};
+
+	const handleRoastDateChange = (e) => {
+		const roastDate = e.target.value;
+		setNewBrew((prev) => ({
+			...prev,
+			roastDate,
 		}));
 	};
 
@@ -241,7 +248,7 @@ export default function NewBrew() {
 													: ""),
 										};
 									})}
-								onChange={handleBeansChange}
+								onChange={handleRoastDateChange}
 							/>
 						)}
 

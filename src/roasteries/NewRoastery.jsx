@@ -6,8 +6,7 @@ import {
 	deleteRoastery,
 	getCurrentUser,
 } from "../utils/supabase";
-import Input from "../components/Input";
-import { Button } from "@heroui/react";
+import { Input, Button } from "@cuplog/components";
 import Loader from "../misc/Loader";
 
 export default function Roasteries() {

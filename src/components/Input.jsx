@@ -8,7 +8,7 @@ export const endContent = (value) => {
 	);
 };
 
-function Input({
+export const Input = ({
 	value,
 	onChange,
 	label,
@@ -17,7 +17,7 @@ function Input({
 	isDisabled = false,
 	suffix,
 	...props
-}) {
+}) => {
 	return (
 		<InputComponent
 			label={label}
@@ -26,9 +26,9 @@ function Input({
 			value={value}
 			onChange={onChange}
 			disabled={isDisabled}
+			size="sm"
 			{...(suffix && { endContent: endContent(suffix) })}
 			{...props}
 		/>
 	);
-}
-export default Input;
+};
